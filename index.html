@@ -404,19 +404,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   <div class="sidebar-section">
     <div class="sidebar-heading">LLD Fundamentals</div>
     <div class="sidebar-item" onclick="showSection('lld-basics');scrollTo('oop-section')"><div class="sidebar-dot"></div>OOP Concepts</div>
-    <div class="sidebar-item" onclick="showSection('lld-basics');scrollTo('uml-section')"><div class="sidebar-dot"></div>UML Diagrams</div>
+    <div class="sidebar-item" onclick="showSection('lld-basics');scrollToEl('uml-section')"><div class="sidebar-dot"></div>UML Diagrams</div>
     <div class="sidebar-item" onclick="showSection('solid')"><div class="sidebar-dot"></div>SOLID Principles</div>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-heading">Design Patterns</div>
-    <div class="sidebar-item" onclick="showSection('patterns');selectPatternGroup('creational')"><div class="sidebar-dot"></div>Creational</div>
-    <div class="sidebar-item" onclick="showSection('patterns');selectPatternGroup('structural')"><div class="sidebar-dot"></div>Structural</div>
-    <div class="sidebar-item" onclick="showSection('patterns');selectPatternGroup('behavioral')"><div class="sidebar-dot"></div>Behavioral</div>
+    <div class="sidebar-item" onclick="showSection('patterns');setTimeout(()=>selectPatternGroup('creational',null),80)"><div class="sidebar-dot"></div>Creational</div>
+    <div class="sidebar-item" onclick="showSection('patterns');setTimeout(()=>selectPatternGroup('structural',null),80)"><div class="sidebar-dot"></div>Structural</div>
+    <div class="sidebar-item" onclick="showSection('patterns');setTimeout(()=>selectPatternGroup('behavioral',null),80)"><div class="sidebar-dot"></div>Behavioral</div>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-heading">System Design</div>
     <div class="sidebar-item" onclick="showSection('hld')"><div class="sidebar-dot"></div>Architecture</div>
-    <div class="sidebar-item" onclick="showSection('hld');scrollTo('nfr-section')"><div class="sidebar-dot"></div>NFRs</div>
+    <div class="sidebar-item" onclick="showSection('hld');scrollToEl('nfr-section')"><div class="sidebar-dot"></div>NFRs</div>
     <div class="sidebar-item" onclick="showSection('infra')"><div class="sidebar-dot"></div>Infrastructure</div>
     <div class="sidebar-item" onclick="showSection('distributed')"><div class="sidebar-dot"></div>Distributed Systems</div>
   </div>
@@ -1248,231 +1248,513 @@ Department(deptId, deptName)
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab(this,'hld-arch')">Architecture</button>
-  <button class="tab" onclick="switchTab(this,'hld-scale')">Scalability</button>
+  <button class="tab" onclick="switchTab(this,'hld-scale')">Scalability & NFRs</button>
   <button class="tab" onclick="switchTab(this,'hld-cap')">CAP Theorem</button>
   <button class="tab" onclick="switchTab(this,'hld-patterns')">Arch Patterns</button>
 </div>
 
-<!-- Architecture Evolution -->
+<!-- ─── TAB: Architecture Evolution ─── -->
 <div class="tab-content active" id="hld-arch">
 <div class="card-title">Architecture Evolution</div>
 <div class="tabs" style="margin-top:8px">
   <button class="tab active" onclick="switchTab(this,'arch-mono')">Monolith</button>
-  <button class="tab" onclick="switchTab(this,'arch-layered')">Layered</button>
+  <button class="tab" onclick="switchTab(this,'arch-layered')">Layered (N-Tier)</button>
   <button class="tab" onclick="switchTab(this,'arch-micro')">Microservices</button>
 </div>
+
 <div class="tab-content active" id="arch-mono">
 <div class="grid-2">
 <div>
-<div class="info-box">All components (UI, business logic, data access) live in ONE deployable unit. Simple to start, hard to scale.</div>
-<div style="margin-top:12px"><span class="badge badge-green">Simple deployment</span><span class="badge badge-green">Easy debugging</span><span class="badge badge-red">Hard to scale</span><span class="badge badge-red">Tech lock-in</span></div>
+<div class="info-box"><strong>Monolithic Architecture</strong> — all components (UI, business logic, data access) live in ONE deployable unit. The entire application ships as a single artifact: one build, one deploy, one process.</div>
+<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+  <span class="badge badge-green">Simple deployment</span>
+  <span class="badge badge-green">Easy local dev</span>
+  <span class="badge badge-green">Simple debugging</span>
+  <span class="badge badge-green">Low latency (in-process)</span>
+  <span class="badge badge-red">Hard to scale selectively</span>
+  <span class="badge badge-red">Tech stack lock-in</span>
+  <span class="badge badge-red">Long build/test cycles</span>
+  <span class="badge badge-red">Deploy risk — all or nothing</span>
+</div>
+<div style="margin-top:18px">
+  <h4 style="margin-bottom:10px;font-size:14px;font-family:var(--font-display)">When to use a Monolith</h4>
+  <div class="list-item"><span style="color:var(--green);margin-right:8px">✓</span>Early-stage startups — move fast, validate product first</div>
+  <div class="list-item"><span style="color:var(--green);margin-right:8px">✓</span>Small teams (&lt;10 engineers) — microservices overhead not worth it</div>
+  <div class="list-item"><span style="color:var(--green);margin-right:8px">✓</span>Well-understood domain where service boundaries aren't clear yet</div>
+  <div class="list-item"><span style="color:var(--red);margin-right:8px">✗</span>Avoid when components need very different scaling profiles</div>
+  <div class="list-item"><span style="color:var(--red);margin-right:8px">✗</span>Avoid when teams need to deploy independently at high velocity</div>
+</div>
+<div class="warn-box" style="margin-top:14px">💡 <strong>Real world:</strong> Instagram, Shopify, and Stack Overflow ran monoliths for years at massive scale. The "Majestic Monolith" is a valid, often overlooked pattern. Don't rush to microservices.</div>
 </div>
 <div>
 <div class="anim-stage">
-<svg width="100%" height="200" viewBox="0 0 320 200">
-  <rect x="60" y="20" width="200" height="160" rx="12" fill="rgba(255,165,0,0.08)" stroke="rgba(255,165,0,0.4)" stroke-width="2"/>
-  <text x="160" y="15" text-anchor="middle" fill="#9ca3af" font-size="11">Monolith Application</text>
-  <rect x="80" y="36" width="160" height="30" rx="6" fill="rgba(0,229,255,0.12)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-  <text x="160" y="55" text-anchor="middle" fill="#00e5ff" font-size="11">UI Layer</text>
-  <rect x="80" y="76" width="160" height="30" rx="6" fill="rgba(168,85,247,0.12)" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
-  <text x="160" y="95" text-anchor="middle" fill="#a855f7" font-size="11">Business Logic</text>
-  <rect x="80" y="116" width="160" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.25)" stroke-width="1"/>
-  <text x="160" y="135" text-anchor="middle" fill="#00ff88" font-size="11">Data Access Layer</text>
-  <rect x="80" y="156" width="160" height="18" rx="4" fill="rgba(255,165,0,0.15)" stroke="rgba(255,165,0,0.35)" stroke-width="1"/>
-  <text x="160" y="169" text-anchor="middle" fill="#ffa500" font-size="10">Database</text>
+<svg width="100%" height="310" viewBox="0 0 340 310">
+  <defs><marker id="ma1" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(0,229,255,0.7)"/></marker></defs>
+  <rect x="10" y="130" width="65" height="40" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.4)" stroke-width="1.5"/>
+  <text x="42" y="154" text-anchor="middle" fill="#00e5ff" font-size="11">Client</text>
+  <line x1="75" y1="150" x2="98" y2="150" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#ma1)"/>
+  <rect x="100" y="20" width="175" height="270" rx="12" fill="rgba(255,165,0,0.04)" stroke="rgba(255,165,0,0.4)" stroke-width="2"/>
+  <text x="187" y="13" text-anchor="middle" fill="#ffa500" font-size="10">Monolith Application</text>
+  <rect x="116" y="34" width="143" height="38" rx="6" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
+  <text x="187" y="50" text-anchor="middle" fill="#00e5ff" font-size="11" font-weight="bold">Presentation Layer</text>
+  <text x="187" y="64" text-anchor="middle" fill="#9ca3af" font-size="9">React / Angular / Templates</text>
+  <line x1="187" y1="72" x2="187" y2="82" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" marker-end="url(#ma1)"/>
+  <rect x="116" y="84" width="143" height="38" rx="6" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.3)" stroke-width="1.5"/>
+  <text x="187" y="100" text-anchor="middle" fill="#a855f7" font-size="11" font-weight="bold">Controller Layer</text>
+  <text x="187" y="114" text-anchor="middle" fill="#9ca3af" font-size="9">Routes / REST Handlers</text>
+  <line x1="187" y1="122" x2="187" y2="132" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" marker-end="url(#ma1)"/>
+  <rect x="116" y="134" width="143" height="38" rx="6" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.3)" stroke-width="1.5"/>
+  <text x="187" y="150" text-anchor="middle" fill="#ffa500" font-size="11" font-weight="bold">Business Logic</text>
+  <text x="187" y="164" text-anchor="middle" fill="#9ca3af" font-size="9">Services / Domain Objects</text>
+  <line x1="187" y1="172" x2="187" y2="182" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" marker-end="url(#ma1)"/>
+  <rect x="116" y="184" width="143" height="38" rx="6" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.25)" stroke-width="1.5"/>
+  <text x="187" y="200" text-anchor="middle" fill="#00ff88" font-size="11" font-weight="bold">Data Access Layer</text>
+  <text x="187" y="214" text-anchor="middle" fill="#9ca3af" font-size="9">ORM / Repository Pattern</text>
+  <line x1="187" y1="222" x2="187" y2="232" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" marker-end="url(#ma1)"/>
+  <rect x="116" y="234" width="143" height="38" rx="6" fill="rgba(255,165,0,0.12)" stroke="rgba(255,165,0,0.35)" stroke-width="1.5"/>
+  <text x="187" y="257" text-anchor="middle" fill="#ffa500" font-size="11" font-weight="bold">🗄 Database</text>
+  <rect x="285" y="110" width="44" height="90" rx="6" fill="rgba(255,71,87,0.08)" stroke="rgba(255,71,87,0.3)" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="307" y="148" text-anchor="middle" fill="#ff4757" font-size="9">ONE</text>
+  <text x="307" y="162" text-anchor="middle" fill="#ff4757" font-size="9">DEPLOY</text>
 </svg>
 </div>
+<div class="code-block" style="margin-top:12px;font-size:11px">
+<span class="cm">// All called in-process — no network hops</span><br>
+<span class="kw">class</span> <span class="fn">UserController</span> {<br>
+&nbsp;&nbsp;<span class="kw">async</span> <span class="fn">register</span>(req, res) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> user = <span class="kw">await</span> this.db.save(req.body);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">await</span> this.emailSvc.sendWelcome(user);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json(user); <span class="cm">// single process</span><br>
+&nbsp;&nbsp;}<br>
+}
 </div>
-</div>
-</div>
-<div class="tab-content" id="arch-layered">
-<div class="info-box">Separate concerns into layers. Each layer only communicates with adjacent layers.</div>
-<div class="anim-stage">
-<svg width="100%" height="180" viewBox="0 0 680 180">
-  <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(0,229,255,0.7)"/></marker></defs>
-  <rect x="10" y="60" width="100" height="60" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.35)" stroke-width="1.5"/>
-  <text x="60" y="94" text-anchor="middle" fill="#00e5ff" font-size="12" font-family="Space Mono">Client</text>
-  <line x1="110" y1="90" x2="148" y2="90" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#a2)"/>
-  <rect x="150" y="50" width="110" height="80" rx="8" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.35)" stroke-width="1.5"/>
-  <text x="205" y="88" text-anchor="middle" fill="#a855f7" font-size="11">Presentation</text>
-  <text x="205" y="104" text-anchor="middle" fill="#9ca3af" font-size="10">Layer</text>
-  <line x1="260" y1="90" x2="298" y2="90" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#a2)"/>
-  <rect x="300" y="50" width="110" height="80" rx="8" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.35)" stroke-width="1.5"/>
-  <text x="355" y="88" text-anchor="middle" fill="#ffa500" font-size="11">Business</text>
-  <text x="355" y="104" text-anchor="middle" fill="#9ca3af" font-size="10">Logic Layer</text>
-  <line x1="410" y1="90" x2="448" y2="90" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#a2)"/>
-  <rect x="450" y="50" width="110" height="80" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.3)" stroke-width="1.5"/>
-  <text x="505" y="88" text-anchor="middle" fill="#00ff88" font-size="11">Data Access</text>
-  <text x="505" y="104" text-anchor="middle" fill="#9ca3af" font-size="10">Layer</text>
-  <line x1="560" y1="90" x2="598" y2="90" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#a2)"/>
-  <rect x="600" y="60" width="70" height="60" rx="8" fill="rgba(255,165,0,0.15)" stroke="rgba(255,165,0,0.4)" stroke-width="1.5"/>
-  <text x="635" y="94" text-anchor="middle" fill="#ffa500" font-size="11">DB</text>
-</svg>
-</div>
-</div>
-<div class="tab-content" id="arch-micro">
-<div class="info-box">Each service is independently deployable, owns its data, and communicates via APIs or message queues.</div>
-<div class="anim-stage" style="min-height:300px">
-<svg width="100%" height="300" viewBox="0 0 680 300">
-  <defs><marker id="a3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="rgba(0,229,255,0.5)"/></marker></defs>
-  <!-- Client -->
-  <rect x="10" y="120" width="70" height="40" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.35)" stroke-width="1.5"/>
-  <text x="45" y="144" text-anchor="middle" fill="#00e5ff" font-size="11">Client</text>
-  <!-- API Gateway -->
-  <rect x="110" y="110" width="90" height="60" rx="8" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.4)" stroke-width="2"/>
-  <text x="155" y="135" text-anchor="middle" fill="#ffa500" font-size="11">API</text>
-  <text x="155" y="151" text-anchor="middle" fill="#ffa500" font-size="11">Gateway</text>
-  <!-- Services -->
-  <rect x="260" y="30" width="100" height="50" rx="8" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.35)" stroke-width="1.5"/>
-  <text x="310" y="50" text-anchor="middle" fill="#a855f7" font-size="11">User</text>
-  <text x="310" y="66" text-anchor="middle" fill="#a855f7" font-size="11">Service</text>
-  <rect x="260" y="110" width="100" height="50" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.35)" stroke-width="1.5"/>
-  <text x="310" y="130" text-anchor="middle" fill="#00e5ff" font-size="11">Order</text>
-  <text x="310" y="146" text-anchor="middle" fill="#00e5ff" font-size="11">Service</text>
-  <rect x="260" y="190" width="100" height="50" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.3)" stroke-width="1.5"/>
-  <text x="310" y="210" text-anchor="middle" fill="#00ff88" font-size="11">Payment</text>
-  <text x="310" y="226" text-anchor="middle" fill="#00ff88" font-size="11">Service</text>
-  <!-- DBs -->
-  <rect x="430" y="35" width="60" height="38" rx="6" fill="rgba(168,85,247,0.08)" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
-  <text x="460" y="58" text-anchor="middle" fill="#a855f7" font-size="10">UserDB</text>
-  <rect x="430" y="115" width="60" height="38" rx="6" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
-  <text x="460" y="138" text-anchor="middle" fill="#00e5ff" font-size="10">OrderDB</text>
-  <rect x="430" y="195" width="60" height="38" rx="6" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.2)" stroke-width="1"/>
-  <text x="460" y="218" text-anchor="middle" fill="#00ff88" font-size="10">PayDB</text>
-  <!-- Message Queue -->
-  <rect x="540" y="120" width="100" height="40" rx="8" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.35)" stroke-width="1.5"/>
-  <text x="590" y="144" text-anchor="middle" fill="#ffa500" font-size="11">Msg Queue</text>
-  <!-- Arrows -->
-  <line x1="80" y1="140" x2="108" y2="140" stroke="rgba(0,229,255,0.6)" stroke-width="1.5" marker-end="url(#a3)"/>
-  <line x1="200" y1="125" x2="258" y2="55" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#a3)"/>
-  <line x1="200" y1="140" x2="258" y2="135" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#a3)"/>
-  <line x1="200" y1="155" x2="258" y2="215" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#a3)"/>
-  <line x1="360" y1="55" x2="428" y2="55" stroke="rgba(168,85,247,0.4)" stroke-width="1" marker-end="url(#a3)"/>
-  <line x1="360" y1="135" x2="428" y2="135" stroke="rgba(0,229,255,0.4)" stroke-width="1" marker-end="url(#a3)"/>
-  <line x1="360" y1="215" x2="428" y2="215" stroke="rgba(0,255,136,0.4)" stroke-width="1" marker-end="url(#a3)"/>
-  <line x1="360" y1="135" x2="538" y2="140" stroke="rgba(255,165,0,0.3)" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#a3)"/>
-  <text x="340" y="275" text-anchor="middle" fill="#546e7a" font-size="10">Each service independently deployable — owns its own database</text>
-</svg>
 </div>
 </div>
 </div>
 
-<!-- Scalability -->
-<div class="tab-content" id="hld-scale">
-<div class="card-title" id="nfr-section">Scalability Patterns</div>
+<div class="tab-content" id="arch-layered">
 <div class="grid-2">
 <div>
-<h3>Vertical Scaling (Scale Up)</h3>
-<p style="color:var(--text2);font-size:13px;margin-bottom:12px">Increase resources (CPU, RAM) on existing server. Simple but has limits.</p>
-<div class="anim-stage">
-<svg width="100%" height="160" viewBox="0 0 300 160">
-  <rect x="100" y="100" width="100" height="50" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
-  <text x="150" y="125" text-anchor="middle" fill="#00e5ff" font-size="11">Server</text>
-  <text x="150" y="141" text-anchor="middle" fill="#9ca3af" font-size="10">4 CPU, 8GB</text>
-  <rect x="80" y="40" width="140" height="50" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.3)" stroke-width="2"/>
-  <text x="150" y="63" text-anchor="middle" fill="#00ff88" font-size="11">Bigger Server ↑</text>
-  <text x="150" y="79" text-anchor="middle" fill="#9ca3af" font-size="10">32 CPU, 128GB</text>
-  <text x="150" y="18" text-anchor="middle" fill="#ffa500" font-size="10">⚠️ Has physical limit</text>
-</svg>
+<div class="info-box"><strong>Layered (N-Tier) Architecture</strong> — strict separation into horizontal layers. Each layer ONLY communicates with the adjacent layer directly below it. Classic enterprise pattern — MVC is a variant.</div>
+<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">
+  <span class="badge badge-green">Clear separation of concerns</span>
+  <span class="badge badge-green">Testable each layer in isolation</span>
+  <span class="badge badge-green">Well-known pattern</span>
+  <span class="badge badge-amber">Sinkhole anti-pattern risk</span>
+  <span class="badge badge-red">Rigid layer dependency</span>
+  <span class="badge badge-red">Always traverses all layers</span>
+</div>
+<div style="margin-top:18px">
+  <div class="card" style="margin-bottom:8px;padding:14px;background:rgba(0,229,255,0.03)">
+    <div style="color:var(--cyan);font-weight:700;font-size:13px;margin-bottom:4px">① Presentation Layer</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.5">HTTP request/response, input validation, auth. No business logic. Controllers, REST handlers, GraphQL resolvers.</p>
+  </div>
+  <div class="card" style="margin-bottom:8px;padding:14px;background:rgba(168,85,247,0.03)">
+    <div style="color:var(--purple);font-weight:700;font-size:13px;margin-bottom:4px">② Business Logic Layer</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.5">Core application rules, workflows. No knowledge of HTTP or DB. Pure functions — the heart of your app. Services, Use Cases, Domain objects.</p>
+  </div>
+  <div class="card" style="margin-bottom:8px;padding:14px;background:rgba(255,165,0,0.03)">
+    <div style="color:var(--amber);font-weight:700;font-size:13px;margin-bottom:4px">③ Data Access Layer (DAL)</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.5">Abstracts storage behind Repositories/DAOs. Business layer doesn't know if you use MySQL or MongoDB. Enables zero-change swaps of storage backends.</p>
+  </div>
+  <div class="card" style="padding:14px;background:rgba(0,255,136,0.02)">
+    <div style="color:var(--green);font-weight:700;font-size:13px;margin-bottom:4px">④ Database Layer</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.5">Actual persistence — SQL, NoSQL, Cache. Transactions, indexes, and query optimization live here.</p>
+  </div>
 </div>
 </div>
 <div>
-<h3>Horizontal Scaling (Scale Out)</h3>
-<p style="color:var(--text2);font-size:13px;margin-bottom:12px">Add more servers. Requires load balancer. Theoretically unlimited.</p>
 <div class="anim-stage">
-<svg width="100%" height="160" viewBox="0 0 340 160">
-  <rect x="10" y="60" width="60" height="40" rx="6" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-  <text x="40" y="84" text-anchor="middle" fill="#00e5ff" font-size="10">Server1</text>
-  <rect x="80" y="60" width="60" height="40" rx="6" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-  <text x="110" y="84" text-anchor="middle" fill="#00e5ff" font-size="10">Server2</text>
-  <rect x="150" y="60" width="60" height="40" rx="6" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-  <text x="180" y="84" text-anchor="middle" fill="#00e5ff" font-size="10">Server3</text>
-  <rect x="220" y="60" width="60" height="40" rx="6" fill="rgba(0,255,136,0.1)" stroke="rgba(0,255,136,0.3)" stroke-width="1.5" stroke-dasharray="4,2"/>
-  <text x="250" y="80" text-anchor="middle" fill="#00ff88" font-size="10">+Server</text>
-  <text x="250" y="94" text-anchor="middle" fill="#00ff88" font-size="10">N</text>
-  <rect x="290" y="50" width="40" height="60" rx="6" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.35)" stroke-width="1.5"/>
-  <text x="310" y="76" text-anchor="middle" fill="#ffa500" font-size="9">Load</text>
-  <text x="310" y="90" text-anchor="middle" fill="#ffa500" font-size="9">Balancer</text>
-  <text x="155" y="140" text-anchor="middle" fill="#00ff88" font-size="10">✅ Unlimited horizontal growth</text>
+<svg width="100%" height="200" viewBox="0 0 680 200">
+  <defs>
+    <marker id="la1" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(0,229,255,0.7)"/></marker>
+    <marker id="la2" markerWidth="7" markerHeight="7" refX="2" refY="3" orient="auto"><path d="M7,0 L7,6 L0,3z" fill="rgba(255,165,0,0.5)"/></marker>
+  </defs>
+  <rect x="10" y="75" width="72" height="50" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.4)" stroke-width="1.5"/>
+  <text x="46" y="97" text-anchor="middle" fill="#00e5ff" font-size="11">Client</text>
+  <text x="46" y="112" text-anchor="middle" fill="#9ca3af" font-size="9">Browser</text>
+  <line x1="82" y1="95" x2="112" y2="95" stroke="rgba(0,229,255,0.7)" stroke-width="2" marker-end="url(#la1)"/>
+  <line x1="112" y1="108" x2="82" y2="108" stroke="rgba(255,165,0,0.4)" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#la2)"/>
+  <rect x="114" y="55" width="118" height="90" rx="10" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.35)" stroke-width="2"/>
+  <text x="173" y="80" text-anchor="middle" fill="#00e5ff" font-size="12" font-weight="bold">Presentation</text>
+  <text x="173" y="96" text-anchor="middle" fill="#9ca3af" font-size="9">Controllers</text>
+  <text x="173" y="110" text-anchor="middle" fill="#9ca3af" font-size="9">Middleware</text>
+  <text x="173" y="124" text-anchor="middle" fill="#9ca3af" font-size="9">Express/FastAPI</text>
+  <line x1="232" y1="95" x2="260" y2="95" stroke="rgba(0,229,255,0.6)" stroke-width="2" marker-end="url(#la1)"/>
+  <line x1="260" y1="108" x2="232" y2="108" stroke="rgba(255,165,0,0.4)" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#la2)"/>
+  <rect x="262" y="45" width="118" height="110" rx="10" fill="rgba(168,85,247,0.06)" stroke="rgba(168,85,247,0.35)" stroke-width="2"/>
+  <text x="321" y="72" text-anchor="middle" fill="#a855f7" font-size="12" font-weight="bold">Business</text>
+  <text x="321" y="87" text-anchor="middle" fill="#a855f7" font-size="11">Logic</text>
+  <text x="321" y="105" text-anchor="middle" fill="#9ca3af" font-size="9">Services</text>
+  <text x="321" y="119" text-anchor="middle" fill="#9ca3af" font-size="9">Domain Objects</text>
+  <text x="321" y="133" text-anchor="middle" fill="#9ca3af" font-size="9">Pure Functions</text>
+  <line x1="380" y1="95" x2="408" y2="95" stroke="rgba(0,229,255,0.6)" stroke-width="2" marker-end="url(#la1)"/>
+  <line x1="408" y1="108" x2="380" y2="108" stroke="rgba(255,165,0,0.4)" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#la2)"/>
+  <rect x="410" y="55" width="118" height="90" rx="10" fill="rgba(255,165,0,0.06)" stroke="rgba(255,165,0,0.35)" stroke-width="2"/>
+  <text x="469" y="80" text-anchor="middle" fill="#ffa500" font-size="12" font-weight="bold">Data Access</text>
+  <text x="469" y="96" text-anchor="middle" fill="#9ca3af" font-size="9">Repositories</text>
+  <text x="469" y="110" text-anchor="middle" fill="#9ca3af" font-size="9">DAOs / ORM</text>
+  <text x="469" y="124" text-anchor="middle" fill="#9ca3af" font-size="9">TypeORM/SQLAlchemy</text>
+  <line x1="528" y1="95" x2="556" y2="95" stroke="rgba(0,229,255,0.6)" stroke-width="2" marker-end="url(#la1)"/>
+  <rect x="558" y="70" width="100" height="60" rx="10" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.3)" stroke-width="2"/>
+  <text x="608" y="96" text-anchor="middle" fill="#00ff88" font-size="11" font-weight="bold">Database</text>
+  <text x="608" y="114" text-anchor="middle" fill="#9ca3af" font-size="9">PostgreSQL/MySQL</text>
+  <text x="340" y="180" text-anchor="middle" fill="#546e7a" font-size="10">Strict one-way dependency: each layer only talks to the layer below it</text>
 </svg>
 </div>
+<div class="code-block" style="margin-top:12px;font-size:11px">
+<span class="cm">// Each layer only knows the layer directly below</span><br>
+<span class="kw">class</span> <span class="fn">OrderController</span> { <span class="cm">// Presentation</span><br>
+&nbsp;&nbsp;<span class="kw">async</span> <span class="fn">create</span>(req, res) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> res.json(<span class="kw">await</span> this.orderService.create(req.body));<br>
+&nbsp;&nbsp;} <span class="cm">// ← no DB knowledge here</span><br>
+}<br>
+<span class="kw">class</span> <span class="fn">OrderService</span> { <span class="cm">// Business</span><br>
+&nbsp;&nbsp;<span class="kw">async</span> <span class="fn">create</span>(data) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">await</span> this.payGateway.charge(data); <span class="cm">// rule</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="kw">await</span> this.orderRepo.save(data); <span class="cm">// via DAL</span><br>
+&nbsp;&nbsp;}<br>
+}
 </div>
 </div>
-<hr class="section-divider">
-<h3>Load Balancing Algorithms</h3>
-<div class="grid-3" style="margin-top:16px">
-<div class="card"><div class="card-title" style="font-size:14px">Round Robin</div><p style="font-size:12px;color:var(--text2)">Requests distributed sequentially to each server. Simple and fair for equal-capacity servers.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">Least Connections</div><p style="font-size:12px;color:var(--text2)">Route to server with fewest active connections. Best for variable-length requests.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">IP Hash</div><p style="font-size:12px;color:var(--text2)">Hash client IP to always route same client to same server. Maintains session affinity.</p></div>
 </div>
 </div>
 
-<!-- CAP -->
+<div class="tab-content" id="arch-micro">
+<div class="info-box"><strong>Microservices Architecture</strong> — each service is independently deployable, owns its own database, has a single business responsibility, and communicates via REST/gRPC (sync) or message queues (async). The dominant pattern for large-scale internet systems.</div>
+<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
+  <span class="badge badge-green">Independent deployment</span>
+  <span class="badge badge-green">Polyglot tech stacks</span>
+  <span class="badge badge-green">Selective scaling</span>
+  <span class="badge badge-green">Fault isolation</span>
+  <span class="badge badge-green">Team autonomy</span>
+  <span class="badge badge-red">Distributed complexity</span>
+  <span class="badge badge-red">Network latency</span>
+  <span class="badge badge-red">Data consistency challenges</span>
+  <span class="badge badge-red">High operational overhead</span>
+</div>
+<div class="anim-stage" style="min-height:320px">
+<svg width="100%" height="320" viewBox="0 0 780 320">
+  <defs>
+    <marker id="ms1" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(0,229,255,0.6)"/></marker>
+    <marker id="ms2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(255,165,0,0.6)"/></marker>
+  </defs>
+  <rect x="10" y="130" width="70" height="50" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.4)" stroke-width="1.5"/>
+  <text x="45" y="151" text-anchor="middle" fill="#00e5ff" font-size="11">Client</text>
+  <text x="45" y="167" text-anchor="middle" fill="#9ca3af" font-size="9">Browser</text>
+  <line x1="80" y1="155" x2="108" y2="155" stroke="rgba(0,229,255,0.7)" stroke-width="2" marker-end="url(#ms1)"/>
+  <rect x="110" y="110" width="100" height="90" rx="10" fill="rgba(255,165,0,0.08)" stroke="rgba(255,165,0,0.5)" stroke-width="2"/>
+  <text x="160" y="145" text-anchor="middle" fill="#ffa500" font-size="12" font-weight="bold">API Gateway</text>
+  <text x="160" y="162" text-anchor="middle" fill="#9ca3af" font-size="9">Auth, Rate-limit</text>
+  <text x="160" y="175" text-anchor="middle" fill="#9ca3af" font-size="9">Routing, SSL Term.</text>
+  <line x1="210" y1="138" x2="256" y2="58" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#ms1)"/>
+  <line x1="210" y1="155" x2="256" y2="155" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#ms1)"/>
+  <line x1="210" y1="172" x2="256" y2="245" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#ms1)"/>
+  <rect x="258" y="28" width="108" height="58" rx="8" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.4)" stroke-width="1.5"/>
+  <text x="312" y="52" text-anchor="middle" fill="#a855f7" font-size="12" font-weight="bold">User Service</text>
+  <text x="312" y="67" text-anchor="middle" fill="#9ca3af" font-size="9">Node.js — Auth, Profile</text>
+  <rect x="258" y="126" width="108" height="58" rx="8" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.4)" stroke-width="1.5"/>
+  <text x="312" y="150" text-anchor="middle" fill="#00e5ff" font-size="12" font-weight="bold">Order Service</text>
+  <text x="312" y="165" text-anchor="middle" fill="#9ca3af" font-size="9">Go — Cart, Checkout</text>
+  <rect x="258" y="220" width="108" height="58" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.35)" stroke-width="1.5"/>
+  <text x="312" y="244" text-anchor="middle" fill="#00ff88" font-size="12" font-weight="bold">Payment Service</text>
+  <text x="312" y="259" text-anchor="middle" fill="#9ca3af" font-size="9">Java — Stripe, Billing</text>
+  <line x1="366" y1="57" x2="410" y2="57" stroke="rgba(168,85,247,0.4)" stroke-width="1" marker-end="url(#ms1)"/>
+  <rect x="412" y="37" width="72" height="40" rx="6" fill="rgba(168,85,247,0.06)" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
+  <text x="448" y="55" text-anchor="middle" fill="#a855f7" font-size="10" font-weight="bold">UserDB</text>
+  <text x="448" y="68" text-anchor="middle" fill="#9ca3af" font-size="8">PostgreSQL</text>
+  <line x1="366" y1="155" x2="410" y2="155" stroke="rgba(0,229,255,0.4)" stroke-width="1" marker-end="url(#ms1)"/>
+  <rect x="412" y="135" width="72" height="40" rx="6" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
+  <text x="448" y="153" text-anchor="middle" fill="#00e5ff" font-size="10" font-weight="bold">OrderDB</text>
+  <text x="448" y="166" text-anchor="middle" fill="#9ca3af" font-size="8">MongoDB</text>
+  <line x1="366" y1="249" x2="410" y2="249" stroke="rgba(0,255,136,0.4)" stroke-width="1" marker-end="url(#ms1)"/>
+  <rect x="412" y="229" width="72" height="40" rx="6" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.2)" stroke-width="1"/>
+  <text x="448" y="247" text-anchor="middle" fill="#00ff88" font-size="10" font-weight="bold">PayDB</text>
+  <text x="448" y="260" text-anchor="middle" fill="#9ca3af" font-size="8">MySQL</text>
+  <rect x="520" y="138" width="110" height="48" rx="8" fill="rgba(255,165,0,0.08)" stroke="rgba(255,165,0,0.4)" stroke-width="1.5"/>
+  <text x="575" y="158" text-anchor="middle" fill="#ffa500" font-size="11" font-weight="bold">Kafka</text>
+  <text x="575" y="173" text-anchor="middle" fill="#9ca3af" font-size="9">Event Bus</text>
+  <line x1="366" y1="148" x2="518" y2="155" stroke="rgba(255,165,0,0.3)" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#ms2)"/>
+  <line x1="366" y1="255" x2="518" y2="175" stroke="rgba(255,165,0,0.3)" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#ms2)"/>
+  <rect x="648" y="126" width="110" height="58" rx="8" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.4)" stroke-width="1.5"/>
+  <text x="703" y="150" text-anchor="middle" fill="#ec4899" font-size="11" font-weight="bold">Notification</text>
+  <text x="703" y="165" text-anchor="middle" fill="#ec4899" font-size="10">Service</text>
+  <text x="703" y="177" text-anchor="middle" fill="#9ca3af" font-size="9">Python</text>
+  <line x1="630" y1="162" x2="646" y2="162" stroke="rgba(255,165,0,0.5)" stroke-width="1.5" marker-end="url(#ms2)"/>
+  <text x="395" y="305" text-anchor="middle" fill="#9ca3af" font-size="9">── Sync REST/gRPC</text>
+  <line x1="460" y1="302" x2="500" y2="302" stroke="rgba(255,165,0,0.5)" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#ms2)"/>
+  <text x="560" y="305" text-anchor="middle" fill="#9ca3af" font-size="9">Async Events</text>
+</svg>
+</div>
+<div class="grid-2" style="margin-top:16px">
+<div>
+  <h4 style="font-size:14px;margin-bottom:10px;font-family:var(--font-display)">Communication Patterns</h4>
+  <div class="card" style="padding:14px;margin-bottom:8px">
+    <div style="color:var(--cyan);font-weight:700;font-size:13px;margin-bottom:4px">Synchronous — REST / gRPC</div>
+    <p style="font-size:12px;color:var(--text2)">Direct request-response. Caller waits for reply. gRPC is faster (Protocol Buffers). REST is simpler (JSON). Risk: cascading failures — use circuit breakers.</p>
+  </div>
+  <div class="card" style="padding:14px">
+    <div style="color:var(--amber);font-weight:700;font-size:13px;margin-bottom:4px">Asynchronous — Events (Kafka/SQS)</div>
+    <p style="font-size:12px;color:var(--text2)">Fire and forget. Best for notifications, analytics, billing. Decouples services, better fault tolerance, eventual consistency. Dead letter queues for failures.</p>
+  </div>
+</div>
+<div>
+  <h4 style="font-size:14px;margin-bottom:10px;font-family:var(--font-display)">Decomposition Strategies</h4>
+  <div class="list-item"><span style="color:var(--cyan);margin-right:8px">①</span><strong>By Business Capability</strong> — User, Order, Payment, Notification. Most common.</div>
+  <div class="list-item"><span style="color:var(--purple);margin-right:8px">②</span><strong>By Domain (DDD Bounded Contexts)</strong> — Aligns service boundaries with team ownership.</div>
+  <div class="list-item"><span style="color:var(--amber);margin-right:8px">③</span><strong>Strangler Fig Pattern</strong> — Incrementally extract from monolith. Lowest risk migration path.</div>
+  <div class="warn-box" style="margin-top:12px">⚠ <strong>Conway's Law:</strong> "Systems mirror the communication structure of the organization." Design your team structure first, then your service boundaries.</div>
+</div>
+</div>
+</div>
+
+</div><!-- /hld-arch -->
+
+<!-- ─── TAB: Scalability & NFRs ─── -->
+<div class="tab-content" id="hld-scale">
+
+<h3 style="font-size:20px;margin-bottom:6px;font-family:var(--font-display)">Non-Functional Requirements (NFRs)</h3>
+<p style="color:var(--text2);font-size:14px;margin-bottom:20px;line-height:1.6">NFRs define <em>how well</em> the system performs — not what it does. They're the quality attributes that separate a production system from a toy. In FAANG interviews, always clarify NFRs before designing.</p>
+
+<div class="grid-3" style="margin-bottom:24px">
+  <div class="card" style="border-color:rgba(0,229,255,.25);background:rgba(0,229,255,.04)">
+    <div style="font-size:24px;margin-bottom:8px">⚡</div>
+    <div class="card-title" style="font-size:15px;color:var(--cyan)">Performance / Latency</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">How fast does the system respond? Always ask about percentile SLOs: p50/p95/p99. Tail latency matters — the 1% of slow requests affect real users.</p>
+    <div class="code-block" style="font-size:11px;padding:10px">p50:  12ms  (median user)<br>p95:  45ms  (most users)<br>p99: 180ms  (1 in 100)<br>p999: 800ms (1 in 1000)</div>
+    <div class="warn-box" style="margin-top:10px;font-size:11px">💡 Google found 500ms added latency reduced searches by 20%. Amazon: 100ms = 1% revenue loss.</div>
+  </div>
+  <div class="card" style="border-color:rgba(0,255,136,.25);background:rgba(0,255,136,.03)">
+    <div style="font-size:24px;margin-bottom:8px">🟢</div>
+    <div class="card-title" style="font-size:15px;color:var(--green)">Availability / SLA</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">% of time the system is operational and serving requests. Each additional "9" = 10× less downtime. Most FAANG systems target 99.99%+.</p>
+    <div class="code-block" style="font-size:11px;padding:10px">99%    = 87.6 hrs/yr  down<br>99.9%  =  8.76 hrs/yr  down<br>99.99% = 52.6 min/yr  down<br>99.999%= 5.26 min/yr  down</div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3)">SLI (metric) → SLO (target) → SLA (contract with penalties)</div>
+  </div>
+  <div class="card" style="border-color:rgba(168,85,247,.25);background:rgba(168,85,247,.03)">
+    <div style="font-size:24px;margin-bottom:8px">📈</div>
+    <div class="card-title" style="font-size:15px;color:var(--purple)">Scalability / Throughput</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Ability to handle growing load without degradation. Throughput = requests per second (RPS). Design for 3× peak load.</p>
+    <div class="code-block" style="font-size:11px;padding:10px">Twitter: 350K RPS reads<br>Netflix: 8M concurrent users<br>Google:  40K searches/sec<br>WhatsApp: 1.15M msg/sec</div>
+  </div>
+  <div class="card" style="border-color:rgba(255,165,0,.25);background:rgba(255,165,0,.03)">
+    <div style="font-size:24px;margin-bottom:8px">🛡</div>
+    <div class="card-title" style="font-size:15px;color:var(--amber)">Fault Tolerance</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">System continues operating correctly despite component failures. MTBF (Mean Time Between Failures) and MTTR (Mean Time To Recovery) are key engineering metrics.</p>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--green);margin-right:6px">✓</span>Graceful degradation (serve stale data &gt; error)</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--green);margin-right:6px">✓</span>Circuit breakers (fail fast, don't cascade)</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--green);margin-right:6px">✓</span>Bulkhead isolation (contain failures)</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--green);margin-right:6px">✓</span>Retry with exponential backoff + jitter</div>
+  </div>
+  <div class="card" style="border-color:rgba(255,71,87,.25);background:rgba(255,71,87,.03)">
+    <div style="font-size:24px;margin-bottom:8px">🔒</div>
+    <div class="card-title" style="font-size:15px;color:var(--red)">Security</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">CIA Triad: Confidentiality, Integrity, Availability. Defense-in-depth — multiple layers of controls.</p>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--cyan);margin-right:6px">→</span>TLS 1.3 for all data in transit</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--cyan);margin-right:6px">→</span>AES-256 encryption at rest</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--cyan);margin-right:6px">→</span>OAuth2/JWT for authentication</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--cyan);margin-right:6px">→</span>Zero-trust network architecture</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--cyan);margin-right:6px">→</span>Rate limiting at API gateway</div>
+  </div>
+  <div class="card" style="border-color:rgba(0,180,216,.25);background:rgba(0,180,216,.03)">
+    <div style="font-size:24px;margin-bottom:8px">🌍</div>
+    <div class="card-title" style="font-size:15px;color:var(--cyan2)">Durability &amp; Data Consistency</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Data must survive failures. Design RPO (data loss tolerance) and RTO (recovery time). Replication factor ≥ 3 for critical data.</p>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--amber);margin-right:6px">→</span>Write-ahead logs (WAL) for crash recovery</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--amber);margin-right:6px">→</span>Synchronous replication for strong durability</div>
+    <div class="list-item" style="font-size:12px"><span style="color:var(--amber);margin-right:6px">→</span>Cross-region backups for disaster recovery</div>
+  </div>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
+<h3 style="font-size:20px;margin-bottom:16px;font-family:var(--font-display)">Scaling Strategies</h3>
+
+<div class="grid-2" style="margin-bottom:20px">
+<div>
+<div class="card">
+  <div class="card-title" style="font-size:15px;color:var(--cyan)">Vertical Scaling (Scale Up)</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Add more CPU/RAM/Disk to a single server. Zero code changes. Simple but has hard limits (largest AWS instance is 448 vCPUs, 24TB RAM) and creates a single point of failure.</p>
+  <div class="anim-stage" style="min-height:100px;padding:12px">
+  <svg width="100%" height="90" viewBox="0 0 400 90">
+    <rect x="20" y="15" width="65" height="58" rx="6" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
+    <text x="52" y="38" text-anchor="middle" fill="#00e5ff" font-size="10">4 vCPU</text>
+    <text x="52" y="52" text-anchor="middle" fill="#9ca3af" font-size="9">8GB RAM</text>
+    <text x="52" y="65" text-anchor="middle" fill="#9ca3af" font-size="9">t3.large</text>
+    <text x="120" y="50" text-anchor="middle" fill="#ffa500" font-size="20">→</text>
+    <rect x="155" y="5" width="95" height="78" rx="6" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.4)" stroke-width="2"/>
+    <text x="202" y="28" text-anchor="middle" fill="#00ff88" font-size="10">32 vCPU</text>
+    <text x="202" y="43" text-anchor="middle" fill="#00ff88" font-size="9">256GB RAM</text>
+    <text x="202" y="58" text-anchor="middle" fill="#9ca3af" font-size="9">r6i.8xlarge</text>
+    <text x="202" y="72" text-anchor="middle" fill="#9ca3af" font-size="9">~$2,000/mo</text>
+    <text x="320" y="40" text-anchor="middle" fill="#ff4757" font-size="10">⚠ Ceiling</text>
+    <text x="320" y="56" text-anchor="middle" fill="#9ca3af" font-size="9">~448 cores max</text>
+  </svg>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+    <span class="badge badge-green">Zero code change</span>
+    <span class="badge badge-green">Simple ops</span>
+    <span class="badge badge-red">SPOF</span>
+    <span class="badge badge-red">Cost grows exponentially</span>
+    <span class="badge badge-red">Hard ceiling</span>
+  </div>
+</div>
+</div>
+<div>
+<div class="card">
+  <div class="card-title" style="font-size:15px;color:var(--green)">Horizontal Scaling (Scale Out)</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Add more commodity servers behind a load balancer. Requires stateless services (store session in Redis, not in-memory). How all internet-scale systems work — cloud auto-scaling groups.</p>
+  <div class="anim-stage" style="min-height:100px;padding:12px">
+  <svg width="100%" height="90" viewBox="0 0 400 90">
+    <rect x="8" y="25" width="56" height="40" rx="5" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
+    <text x="36" y="48" text-anchor="middle" fill="#00e5ff" font-size="9">Server 1</text>
+    <rect x="72" y="25" width="56" height="40" rx="5" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
+    <text x="100" y="48" text-anchor="middle" fill="#00e5ff" font-size="9">Server 2</text>
+    <rect x="136" y="25" width="56" height="40" rx="5" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
+    <text x="164" y="48" text-anchor="middle" fill="#00e5ff" font-size="9">Server 3</text>
+    <rect x="200" y="20" width="56" height="50" rx="5" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.35)" stroke-width="1.5" stroke-dasharray="4,2"/>
+    <text x="228" y="43" text-anchor="middle" fill="#00ff88" font-size="9">+Auto</text>
+    <text x="228" y="57" text-anchor="middle" fill="#00ff88" font-size="9">Scale</text>
+    <rect x="270" y="18" width="70" height="54" rx="6" fill="rgba(255,165,0,0.1)" stroke="rgba(255,165,0,0.4)" stroke-width="1.5"/>
+    <text x="305" y="40" text-anchor="middle" fill="#ffa500" font-size="9">Load</text>
+    <text x="305" y="53" text-anchor="middle" fill="#ffa500" font-size="9">Balancer</text>
+    <text x="305" y="65" text-anchor="middle" fill="#9ca3af" font-size="8">HAProxy/ALB</text>
+    <text x="185" y="82" text-anchor="middle" fill="#00ff88" font-size="9">✅ Unlimited scale — cloud auto-scaling on CPU/RPS thresholds</text>
+  </svg>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+    <span class="badge badge-green">Unlimited scale</span>
+    <span class="badge badge-green">No SPOF</span>
+    <span class="badge badge-green">Linear cost</span>
+    <span class="badge badge-amber">Requires stateless services</span>
+  </div>
+</div>
+</div>
+</div>
+
+<h3 style="font-size:18px;margin-bottom:14px;font-family:var(--font-display)">Load Balancing Algorithms</h3>
+<div class="grid-3">
+<div class="card">
+  <div class="card-title" style="font-size:14px;color:var(--cyan)">Round Robin</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Distributes requests sequentially: 1→2→3→1→2→3. Simple, zero overhead. Works well when all servers have equal capacity and requests have uniform cost.</p>
+  <div class="code-block" style="font-size:11px;padding:10px">Req 1 → Server A<br>Req 2 → Server B<br>Req 3 → Server C<br>Req 4 → Server A ↺</div>
+  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-green">Simple</span><span class="badge badge-amber">Ignores server load</span></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:14px;color:var(--purple)">Least Connections</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Route to server with fewest active connections. Dynamically adapts to variable request duration. Best for WebSocket, streaming, or long-running DB queries.</p>
+  <div class="code-block" style="font-size:11px;padding:10px">Server A: 120 conns<br>Server B:  45 conns ← next<br>Server C:  98 conns<br>→ Route to B (fewest)</div>
+  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-green">Adaptive</span><span class="badge badge-green">Handles slow requests</span></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:14px;color:var(--amber)">IP Hash / Sticky Sessions</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:10px">hash(clientIP) % N → always same server for same client. Maintains session affinity. Avoid this — store sessions in Redis instead for true stateless scaling.</p>
+  <div class="code-block" style="font-size:11px;padding:10px">hash("10.0.1.4") = 4821<br>4821 % 3 = 2 → Server B<br><br>Same IP always → Server B</div>
+  <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-green">Session affinity</span><span class="badge badge-red">Uneven distribution</span></div>
+</div>
+</div>
+
+</div><!-- /hld-scale -->
+
+<!-- ─── TAB: CAP Theorem ─── -->
 <div class="tab-content" id="hld-cap">
-<div class="card-title">CAP Theorem</div>
-<div class="info-box">In a distributed system, you can only guarantee <strong>2 of 3</strong>: Consistency, Availability, Partition Tolerance. Since partition tolerance is required in real distributed systems, you choose between CP or AP.</div>
+<div class="info-box"><strong>CAP Theorem</strong> (Brewer, 2000) — In any distributed system, you can only guarantee <strong>2 of 3</strong> properties: Consistency, Availability, and Partition Tolerance. Since network partitions are inevitable in real distributed systems, the real choice is between <strong>CP</strong> or <strong>AP</strong>.</div>
 <div class="grid-2" style="margin-top:20px">
 <div>
 <div style="display:flex;justify-content:center;margin:16px 0">
 <svg width="280" height="260" viewBox="0 0 280 260">
-  <!-- Triangle -->
-  <polygon points="140,20 20,220 260,220" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
-  <!-- Vertices -->
-  <circle cx="140" cy="20" r="28" fill="rgba(0,229,255,0.15)" stroke="rgba(0,229,255,0.5)" stroke-width="2"/>
-  <text x="140" y="16" text-anchor="middle" fill="#00e5ff" font-size="11" font-weight="bold">C</text>
-  <text x="140" y="30" text-anchor="middle" fill="#00e5ff" font-size="10">Consistency</text>
-  <circle cx="20" cy="220" r="28" fill="rgba(255,165,0,0.15)" stroke="rgba(255,165,0,0.5)" stroke-width="2"/>
-  <text x="20" y="216" text-anchor="middle" fill="#ffa500" font-size="11" font-weight="bold">A</text>
-  <text x="20" y="230" text-anchor="middle" fill="#ffa500" font-size="10">Availability</text>
-  <circle cx="260" cy="220" r="28" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
-  <text x="260" y="216" text-anchor="middle" fill="#a855f7" font-size="11" font-weight="bold">P</text>
-  <text x="260" y="230" text-anchor="middle" fill="#a855f7" font-size="10">Partition</text>
-  <!-- Zones -->
-  <text x="80" y="130" text-anchor="middle" fill="rgba(0,229,255,0.7)" font-size="11" font-weight="bold">CP</text>
-  <text x="80" y="145" text-anchor="middle" fill="#546e7a" font-size="9">MongoDB</text>
-  <text x="80" y="157" text-anchor="middle" fill="#546e7a" font-size="9">HBase</text>
-  <text x="200" y="130" text-anchor="middle" fill="rgba(255,165,0,0.7)" font-size="11" font-weight="bold">AP</text>
-  <text x="200" y="145" text-anchor="middle" fill="#546e7a" font-size="9">Cassandra</text>
-  <text x="200" y="157" text-anchor="middle" fill="#546e7a" font-size="9">DynamoDB</text>
-  <text x="140" y="200" text-anchor="middle" fill="rgba(0,255,136,0.7)" font-size="11" font-weight="bold">CA</text>
-  <text x="140" y="215" text-anchor="middle" fill="#546e7a" font-size="9">Single node DB</text>
+  <polygon points="140,18 18,222 262,222" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.25)" stroke-width="1.5"/>
+  <circle cx="140" cy="18" r="30" fill="rgba(0,229,255,0.15)" stroke="rgba(0,229,255,0.5)" stroke-width="2"/>
+  <text x="140" y="14" text-anchor="middle" fill="#00e5ff" font-size="11" font-weight="bold">C</text>
+  <text x="140" y="28" text-anchor="middle" fill="#00e5ff" font-size="9">Consistency</text>
+  <circle cx="18" cy="222" r="30" fill="rgba(255,165,0,0.15)" stroke="rgba(255,165,0,0.5)" stroke-width="2"/>
+  <text x="18" y="218" text-anchor="middle" fill="#ffa500" font-size="11" font-weight="bold">A</text>
+  <text x="18" y="232" text-anchor="middle" fill="#ffa500" font-size="9">Availability</text>
+  <circle cx="262" cy="222" r="30" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+  <text x="262" y="218" text-anchor="middle" fill="#a855f7" font-size="11" font-weight="bold">P</text>
+  <text x="262" y="232" text-anchor="middle" fill="#a855f7" font-size="9">Partition</text>
+  <text x="78" y="132" text-anchor="middle" fill="rgba(0,229,255,0.8)" font-size="12" font-weight="bold">CP</text>
+  <text x="78" y="148" text-anchor="middle" fill="#546e7a" font-size="9">MongoDB</text>
+  <text x="78" y="160" text-anchor="middle" fill="#546e7a" font-size="9">HBase, ZooKeeper</text>
+  <text x="202" y="132" text-anchor="middle" fill="rgba(255,165,0,0.8)" font-size="12" font-weight="bold">AP</text>
+  <text x="202" y="148" text-anchor="middle" fill="#546e7a" font-size="9">Cassandra</text>
+  <text x="202" y="160" text-anchor="middle" fill="#546e7a" font-size="9">DynamoDB, CouchDB</text>
+  <text x="140" y="198" text-anchor="middle" fill="rgba(0,255,136,0.7)" font-size="10" font-weight="bold">CA</text>
+  <text x="140" y="212" text-anchor="middle" fill="#546e7a" font-size="8">Single-node DB only</text>
 </svg>
 </div>
 </div>
 <div>
-<h4>Consistency</h4>
-<p style="color:var(--text2);font-size:13px;margin-bottom:12px">Every read receives the most recent write or an error. All nodes see the same data simultaneously.</p>
-<h4>Availability</h4>
-<p style="color:var(--text2);font-size:13px;margin-bottom:12px">Every request receives a response (not necessarily the latest data). System stays online.</p>
-<h4>Partition Tolerance</h4>
-<p style="color:var(--text2);font-size:13px;margin-bottom:12px">System continues to operate despite network partitions between nodes.</p>
-<div class="warn-box"><strong>PACELC:</strong> Even without partitions, there's a tradeoff between latency and consistency. A more complete model for modern systems.</div>
-<div style="margin-top:16px">
-<div class="slider-row">
-  <span style="font-size:12px;color:var(--cyan)">Consistency</span>
-  <input type="range" min="0" max="100" value="50" oninput="capSlider(this.value)" id="cap-slider">
-  <span style="font-size:12px;color:var(--amber)">Availability</span>
+  <div class="card" style="margin-bottom:10px;padding:16px;border-color:rgba(0,229,255,.2)">
+    <div style="color:var(--cyan);font-weight:700;font-size:14px;margin-bottom:6px">Consistency</div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.5">Every read receives the most recent write — or returns an error. All nodes see identical data at any moment. Required for banking, inventory, distributed locks.</p>
+  </div>
+  <div class="card" style="margin-bottom:10px;padding:16px;border-color:rgba(255,165,0,.2)">
+    <div style="color:var(--amber);font-weight:700;font-size:14px;margin-bottom:6px">Availability</div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.5">Every request receives a non-error response — though it may not be the latest data. System stays online even during partial failures. Required for social feeds, product catalogs.</p>
+  </div>
+  <div class="card" style="margin-bottom:16px;padding:16px;border-color:rgba(168,85,247,.2)">
+    <div style="color:var(--purple);font-weight:700;font-size:14px;margin-bottom:6px">Partition Tolerance</div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.5">System operates despite network splits between nodes. <strong>Not optional</strong> — network partitions are a physical reality. Every distributed system must be partition tolerant.</p>
+  </div>
+  <div class="warn-box"><strong>PACELC Extension:</strong> Even without partitions (E), you still choose between Latency (L) and Consistency (C). A more complete model: CP with low L (Dynamo in strong mode), or AP with low L (Cassandra).</div>
+  <div style="margin-top:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:12px;color:var(--cyan)">Consistency</span>
+      <input type="range" min="0" max="100" value="50" oninput="capSlider(this.value)" id="cap-slider" style="flex:1">
+      <span style="font-size:12px;color:var(--amber)">Availability</span>
+    </div>
+    <div id="cap-output" style="font-size:13px;color:var(--text2);text-align:center">Balanced — DynamoDB eventual consistency mode</div>
+  </div>
 </div>
-<div id="cap-output" style="font-size:13px;color:var(--text2);text-align:center;margin-top:8px">Balanced — DynamoDB eventual consistency mode</div>
 </div>
-</div>
-</div>
-</div>
+</div><!-- /hld-cap -->
 
-<!-- Arch Patterns -->
+<!-- ─── TAB: Architecture Patterns ─── -->
 <div class="tab-content" id="hld-patterns">
-<div class="card-title">Architecture Patterns</div>
+<div style="margin-bottom:16px"><div class="info-box">These patterns solve recurring architectural challenges at system scale. Understanding them is critical for FAANG system design interviews. Each solves a specific class of problem.</div></div>
 <div class="grid-3">
-<div class="card"><div class="card-title" style="font-size:14px">Event-Driven</div><p style="font-size:12px;color:var(--text2)">Components communicate via events. Loose coupling. Kafka, EventBridge. Great for async workflows.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">CQRS</div><p style="font-size:12px;color:var(--text2)">Command Query Responsibility Segregation — separate read and write models for performance.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">Event Sourcing</div><p style="font-size:12px;color:var(--text2)">Store state changes as events. Rebuild state by replaying. Complete audit trail.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">Saga Pattern</div><p style="font-size:12px;color:var(--text2)">Manage distributed transactions across microservices using compensating transactions.</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">BFF Pattern</div><p style="font-size:12px;color:var(--text2)">Backend For Frontend — dedicated API layer tailored to each frontend (mobile, web, TV).</p></div>
-<div class="card"><div class="card-title" style="font-size:14px">Strangler Fig</div><p style="font-size:12px;color:var(--text2)">Gradually replace a monolith by migrating features to microservices one at a time.</p></div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--cyan)">Event-Driven Architecture</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Components communicate via events published to a message bus (Kafka, EventBridge, SNS). Publishers don't know about subscribers. Excellent for async workflows and high throughput.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">OrderService.publish("order.created")<br>→ InventoryService subscribes<br>→ NotificationService subscribes<br>→ AnalyticsService subscribes</div>
+    <div style="margin-top:8px"><span class="badge badge-green">Loose coupling</span><span class="badge badge-green">High throughput</span><span class="badge badge-amber">Eventually consistent</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--purple)">CQRS (Command Query Separation)</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Separate <em>write model</em> (Commands) from <em>read model</em> (Queries). Optimize reads independently from writes. Write side emits events; read side builds materialized views.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">Write: POST /orders → OrderDB<br>         → event → rebuild<br>Read:  GET /orders/feed<br>         → ElasticSearch view</div>
+    <div style="margin-top:8px"><span class="badge badge-green">Read/write optimized</span><span class="badge badge-amber">Extra complexity</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--amber)">Event Sourcing</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Never store current state directly — store the sequence of events that led to the current state. Rebuild any past state by replaying events. Complete audit trail, temporal queries.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">Events: [AccountOpened, Deposited,<br>  Withdrawn, TransferSent]<br>Balance = replay all events<br>→ perfect audit trail</div>
+    <div style="margin-top:8px"><span class="badge badge-green">Full audit trail</span><span class="badge badge-green">Time travel</span><span class="badge badge-red">Eventual consistency</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--red)">Saga Pattern</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Manage distributed transactions across microservices using a sequence of local transactions + compensating transactions on failure. No distributed 2PC needed.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">Order → reserve inventory<br>     → charge payment<br>     → confirm shipping<br>Failure: compensate backwards</div>
+    <div style="margin-top:8px"><span class="badge badge-green">No 2PC needed</span><span class="badge badge-amber">Complex rollback</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--pink)">Backend For Frontend (BFF)</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">A dedicated API layer tailored to each frontend client (Web BFF, Mobile BFF, TV BFF). Aggregates backend services and shapes responses for each client's specific needs.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">Mobile BFF → lighter payloads<br>Web BFF    → richer data<br>TV BFF     → streaming data<br>Each team owns their BFF</div>
+    <div style="margin-top:8px"><span class="badge badge-green">Client-optimized</span><span class="badge badge-green">Team autonomy</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:14px;color:var(--green)">Strangler Fig Pattern</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Incrementally replace a monolith by building new features as microservices and routing traffic. Named after the fig tree that grows around a host tree. Zero-downtime migration strategy.</p>
+    <div class="code-block" style="font-size:10px;padding:8px">Phase 1: Monolith handles all<br>Phase 2: /auth → Auth Service<br>Phase 3: /orders → Order Svc<br>Phase 4: Monolith retired</div>
+    <div style="margin-top:8px"><span class="badge badge-green">Low risk migration</span><span class="badge badge-green">Zero downtime</span></div>
+  </div>
 </div>
-</div>
+</div><!-- /hld-patterns -->
 
-</div>
+</div><!-- /section-hld -->
+
+
 
 <!-- ═══════════════════════ INFRASTRUCTURE ═══════════════════════ -->
 <div class="section" id="section-infra">
@@ -2414,6 +2696,12 @@ span.<span class="fn">setAttribute</span>(<span class="str">'order.id'</span>, o
 <script>
 // ─── SECTION NAVIGATION ─────────────────────
 const sections = ['home','lld-basics','solid','patterns','lld-adv','hld','infra','distributed','playground','lab3d','simulator','interview','builder','qbank','gamemode','whiteboard','perf'];
+function scrollToEl(id){
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  },60);
+}
 function showSection(id){
   sections.forEach(s=>{
     const el=document.getElementById('section-'+s);
@@ -2424,7 +2712,7 @@ function showSection(id){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='patterns') setTimeout(()=>renderPatternSection('creational'),50);
+  if(id==='patterns') setTimeout(()=>{ if(!window._pendingPatternGroup) renderPatternSection('creational'); window._pendingPatternGroup=false; },50);
   if(id==='playground') setTimeout(()=>{loadSystem('url',document.querySelector('#pg-systems .pg-btn'));initPlayground();},50);
   if(id==='lab3d') setTimeout(()=>initLab3D(),80);
   if(id==='simulator') setTimeout(()=>initSimulator(),80);
@@ -2438,12 +2726,12 @@ function showSection(id){
 
 // ─── TAB SWITCHER ────────────────────────────
 function switchTab(btn,contentId){
-  const parent=btn.closest('.tabs');
-  parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const tabsEl=btn.closest('.tabs');
+  tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  const section=btn.closest('.section')||document.body;
-  const allContent=section.querySelectorAll('.tab-content');
-  allContent.forEach(c=>c.classList.remove('active'));
+  // Only deactivate DIRECT sibling .tab-content elements of the .tabs container
+  const container=tabsEl.parentElement;
+  Array.from(container.children).forEach(c=>{if(c.classList.contains('tab-content'))c.classList.remove('active');});
   const target=document.getElementById(contentId);
   if(target) target.classList.add('active');
 }
@@ -2524,6 +2812,7 @@ const patterns={
 };
 
 function selectPatternGroup(group,btn){
+  window._pendingPatternGroup=true;
   document.querySelectorAll('#pattern-group-tabs .pg-btn').forEach(b=>b.classList.remove('sel'));
   if(btn) btn.classList.add('sel');
   renderPatternSection(group);
