@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SystemDesign.dev — Visual Learning for Engineers</title>
+<title>System Design — Interactive Learning Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
   --bg: #060913;
   --bg2: #0c1120;
   --bg3: #111827;
+  --bg4: #0a0f1e;
   --glass: rgba(255,255,255,0.04);
   --glass2: rgba(255,255,255,0.08);
   --border: rgba(255,255,255,0.08);
@@ -28,11 +30,14 @@
   --text3: #6b7280;
   --sidebar-w: 240px;
   --navbar-h: 60px;
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;min-height:100vh}
 
 /* ─── SCROLLBAR ─────────────────────────── */
 ::-webkit-scrollbar{width:6px}
@@ -40,10 +45,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 ::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:3px}
 
 /* ─── NAVBAR ────────────────────────────── */
-#navbar{position:fixed;top:0;left:0;right:0;height:var(--navbar-h);background:rgba(6,9,19,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:1000;gap:8px}
-.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--cyan);letter-spacing:-0.5px;margin-right:auto;cursor:pointer}
-.nav-logo span{color:var(--amber)}
-.nav-btn{background:none;border:none;color:var(--text2);font-family:'Inter',sans-serif;font-size:13px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap}
+#navbar{position:fixed;top:0;left:0;right:0;height:var(--navbar-h);background:rgba(6,9,19,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;z-index:1000;gap:6px}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--text);letter-spacing:-0.5px;margin-right:auto;cursor:pointer;display:flex;align-items:center;gap:8px}
+.nav-logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.nav-logo span{color:var(--cyan)}
+.nav-btn{background:none;border:none;color:var(--text2);font-family:var(--font-body);font-size:12.5px;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap}
 .nav-btn:hover,.nav-btn.active{color:var(--cyan);background:rgba(0,229,255,0.08)}
 .nav-menu{display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto}
 
@@ -67,10 +73,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── COMMON COMPONENTS ──────────────────── */
-.page-title{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--text) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.page-title{font-family:var(--font-display);font-size:34px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--text) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .page-subtitle{color:var(--text2);font-size:15px;margin-bottom:32px;line-height:1.6}
 .card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
-.card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.card-title{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:12px;color:var(--text)}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;margin:2px}
 .badge-cyan{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
 .badge-amber{background:rgba(255,165,0,.12);color:var(--amber);border:1px solid rgba(255,165,0,.2)}
@@ -86,8 +92,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 .btn-outline{background:none;border:1px solid var(--border2);color:var(--text2)}
 .btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
 .tag{font-size:11px;color:var(--cyan);background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);padding:2px 8px;border-radius:4px;font-family:'Space Mono',monospace}
-code,pre{font-family:'Space Mono',monospace;font-size:12px}
-.code-block{background:#0a0f1e;border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto;font-size:12px;line-height:1.7;color:#a8b2d8}
+code,pre{font-family:var(--font-code);font-size:12px}
+.code-block{background:#0a0f1e;border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto;font-size:12px;line-height:1.7;color:#a8b2d8;font-family:var(--font-code)}
 .code-block .kw{color:#82aaff}.code-block .fn{color:#82ffdb}.code-block .str{color:#f78c6c}.code-block .cm{color:#546e7a}
 .diagram-container{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
 .section-divider{border:none;border-top:1px solid var(--border);margin:28px 0}
@@ -95,7 +101,7 @@ code,pre{font-family:'Space Mono',monospace;font-size:12px}
 .warn-box{background:rgba(255,165,0,.05);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:14px 18px;margin:12px 0;font-size:13px;color:var(--text2);line-height:1.6}
 .list-item{display:flex;gap:10px;align-items:flex-start;margin:8px 0;color:var(--text2);font-size:14px;line-height:1.5}
 .list-icon{color:var(--cyan);font-size:12px;margin-top:2px;flex-shrink:0}
-h3{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px;color:var(--text)}
+h3{font-family:var(--font-display);font-weight:700;font-size:16px;margin-bottom:10px;color:var(--text)}
 h4{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:6px}
 
 /* ─── SVG NODES ──────────────────────────── */
@@ -110,7 +116,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 
 /* ─── HOME HERO ───────────────────────────── */
 #home-hero{min-height:calc(100vh - var(--navbar-h) - 64px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px}
-.hero-title{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;line-height:1.1;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,var(--cyan) 60%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-title{font-family:var(--font-display);font-size:54px;font-weight:800;line-height:1.1;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,var(--cyan) 60%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hero-sub{font-size:18px;color:var(--text2);max-width:560px;line-height:1.6;margin-bottom:36px}
 .hero-tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
 #canvas-hero{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:.5}
@@ -247,6 +253,113 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .builder-tool-btn.danger:hover{background:rgba(255,71,87,.08)}
 .builder-node{position:absolute;border-radius:10px;border:1.5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:move;user-select:none;transition:box-shadow .2s;min-width:90px;padding:8px 12px;text-align:center}
 .builder-node.selected{box-shadow:0 0 0 2px var(--cyan),0 0 20px rgba(0,229,255,.3)}
+
+/* ─── ADVISOR PANEL ───────────────────────── */
+#advisor-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:16px}
+#advisor-panel h4{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.advisor-tip{background:var(--bg3);border-left:3px solid var(--cyan);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;animation:fadeIn .3s ease}
+.advisor-tip.warn{border-left-color:var(--amber)}
+.advisor-tip.crit{border-left-color:var(--red)}
+.advisor-tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.advisor-tip-text{font-size:13px;color:var(--text2);line-height:1.5}
+.advisor-tip-impact{font-size:11px;color:var(--green);margin-top:4px;font-family:var(--font-code)}
+
+/* ─── SCALABILITY ANALYZER ────────────────── */
+.analyzer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.analyzer-metric{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.analyzer-metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.analyzer-metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.analyzer-metric-val{font-family:var(--font-code);font-size:24px;font-weight:700;color:var(--cyan)}
+.analyzer-metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.analyzer-bar-wrap{margin-top:10px;background:var(--bg2);border-radius:3px;height:4px;overflow:hidden}
+.analyzer-bar{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.bottleneck-list{margin-top:14px}
+.bottleneck-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
+.bottleneck-sev{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.bottleneck-sev.high{background:var(--red);box-shadow:0 0 6px var(--red)}
+.bottleneck-sev.med{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.bottleneck-sev.low{background:var(--green);box-shadow:0 0 6px var(--green)}
+.analyzer-chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px}
+
+/* ─── LATENCY HEATMAP ─────────────────────── */
+#heatmap-canvas{width:100%;height:420px;display:block;border-radius:14px;border:1px solid var(--border);cursor:pointer}
+.heatmap-controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.heatmap-slider-group{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 14px}
+.heatmap-slider-group label{font-size:12px;color:var(--text2);white-space:nowrap}
+.latency-legend{display:flex;align-items:center;gap:6px;margin-left:auto}
+.latency-legend-bar{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#00ff88,#ffa500,#ff4757)}
+.latency-legend-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);width:120px}
+
+/* ─── GAME MODE ───────────────────────────── */
+#game-canvas{width:100%;height:520px;display:block;border-radius:14px;border:1px solid var(--border);cursor:default}
+.game-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.game-stat{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center}
+.game-stat-val{font-family:var(--font-code);font-size:20px;font-weight:700}
+.game-stat-label{font-size:10px;color:var(--text3);margin-top:2px}
+.game-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.game-action-btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:all .2s;position:relative}
+.game-action-btn:disabled{opacity:.4;cursor:not-allowed}
+.game-action-cost{position:absolute;top:-8px;right:-6px;background:var(--amber);color:#000;font-size:9px;font-weight:700;padding:2px 5px;border-radius:8px}
+.game-log{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;height:100px;overflow-y:auto;font-family:var(--font-code);font-size:11px;line-height:1.6;margin-top:10px}
+.game-overlay{position:absolute;inset:0;background:rgba(6,9,19,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;z-index:10}
+.game-overlay h2{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px}
+.game-wrap{position:relative}
+
+/* ─── QUESTION BANK ───────────────────────── */
+.qb-filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.qb-filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border2);background:var(--glass);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.qb-filter-btn:hover,.qb-filter-btn.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.qb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.qb-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.qb-card:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,229,255,.1)}
+.qb-card-level{position:absolute;top:14px;right:14px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;text-transform:uppercase}
+.qb-card-level.beginner{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.2)}
+.qb-card-level.intermediate{background:rgba(255,165,0,.1);color:var(--amber);border:1px solid rgba(255,165,0,.2)}
+.qb-card-level.advanced{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.2)}
+.qb-card-icon{font-size:26px;margin-bottom:10px}
+.qb-card-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:6px}
+.qb-card-scale{font-size:12px;color:var(--text3);font-family:var(--font-code);margin-bottom:10px}
+.qb-card-tags{display:flex;gap:6px;flex-wrap:wrap}
+.qb-detail{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;margin-top:16px;display:none;animation:fadeIn .3s ease}
+.qb-detail.active{display:block}
+.qb-steps{counter-reset:step;margin-top:14px}
+.qb-step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.qb-step-num{width:28px;height:28px;border-radius:50%;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);color:var(--cyan);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-code)}
+.qb-step-body{flex:1;padding-top:4px}
+.qb-step-title{font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px}
+.qb-step-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.reveal-btn{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#060913;border:none;padding:10px 22px;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all .2s;margin-top:14px}
+.reveal-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,229,255,.35)}
+.qb-solution-canvas{width:100%;height:320px;display:block;background:var(--bg3);border-radius:10px;border:1px solid var(--border);margin-top:16px;display:none}
+.qb-solution-canvas.active{display:block}
+
+/* ─── WHITEBOARD ──────────────────────────── */
+#wb-canvas{display:block;cursor:crosshair;touch-action:none}
+#wb-wrap{position:relative;overflow:hidden;background:#0d1424;border-radius:0 0 14px 14px;border:1px solid var(--border);border-top:none}
+.wb-toolbar{background:var(--bg2);border:1px solid var(--border);border-radius:14px 14px 0 0;padding:10px 14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.wb-tool{width:34px;height:34px;border-radius:8px;border:1px solid var(--border2);background:var(--glass);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s;flex-shrink:0;border:none}
+.wb-tool:hover,.wb-tool.active{background:rgba(0,229,255,.12);color:var(--cyan);box-shadow:0 0 0 1px rgba(0,229,255,.3)}
+.wb-sep{width:1px;height:24px;background:var(--border);margin:0 2px}
+.wb-color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.wb-color-swatch.active{border-color:white;transform:scale(1.2)}
+.wb-size-btn{padding:4px 10px;border-radius:6px;font-size:11px;border:1px solid var(--border2);background:var(--glass);color:var(--text2);cursor:pointer;font-family:var(--font-code)}
+.wb-size-btn.active{border-color:var(--cyan);color:var(--cyan)}
+
+/* ─── FOOTER ──────────────────────────────── */
+#footer{text-align:center;padding:28px 24px;border-top:1px solid var(--border);color:var(--text3);font-size:13px;margin-top:40px}
+#footer a{color:var(--text2);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s;font-weight:500}
+#footer a:hover{color:var(--cyan)}
+#footer svg{display:inline-block;vertical-align:middle}
+
+/* ─── RICH TOOLTIP ────────────────────────── */
+.rich-tooltip{position:fixed;background:rgba(12,17,32,.97);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;max-width:260px;z-index:9999;pointer-events:none;font-size:12px;line-height:1.6;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.7);backdrop-filter:blur(8px);transition:opacity .15s}
+.rich-tooltip strong{color:var(--cyan);display:block;margin-bottom:4px;font-size:13px}
+
+/* ─── PERF ANALYZER SECTION ───────────────── */
+.perf-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content}
+.perf-tab{padding:7px 18px;border-radius:7px;border:none;background:none;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.perf-tab.active{background:var(--glass2);color:var(--text);border:1px solid var(--border2)}
+
 </style>
 </head>
 <body>
@@ -256,22 +369,28 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 
 <!-- NAVBAR -->
 <nav id="navbar">
-  <div class="nav-logo">System<span>Design</span>.dev</div>
+  <div class="nav-logo" onclick="showSection('home')">
+    <div class="nav-logo-icon">⬡</div>
+    <span>System Design</span>
+  </div>
   <div class="nav-menu">
     <button class="nav-btn active" onclick="showSection('home')">Home</button>
-    <button class="nav-btn" onclick="showSection('lld-basics')">LLD Basics</button>
+    <button class="nav-btn" onclick="showSection('lld-basics')">LLD</button>
     <button class="nav-btn" onclick="showSection('solid')">SOLID</button>
     <button class="nav-btn" onclick="showSection('patterns')">Patterns</button>
-    <button class="nav-btn" onclick="showSection('lld-adv')">LLD Advanced</button>
     <button class="nav-btn" onclick="showSection('hld')">HLD</button>
-    <button class="nav-btn" onclick="showSection('infra')">Infrastructure</button>
+    <button class="nav-btn" onclick="showSection('infra')">Infra</button>
     <button class="nav-btn" onclick="showSection('distributed')">Distributed</button>
-    <button class="nav-btn" onclick="showSection('playground')">Playground</button>
-    <div style="width:1px;height:24px;background:var(--border);margin:0 4px;flex-shrink:0"></div>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0"></div>
     <button class="nav-btn" style="color:var(--cyan)" onclick="showSection('lab3d')">⬡ 3D Lab</button>
     <button class="nav-btn" style="color:var(--amber)" onclick="showSection('simulator')">⚡ Simulator</button>
-    <button class="nav-btn" style="color:var(--green)" onclick="showSection('interview')">🎯 Interview</button>
+    <button class="nav-btn" style="color:var(--green)" onclick="showSection('interview')">🎯 Practice</button>
     <button class="nav-btn" style="color:var(--purple)" onclick="showSection('builder')">🧱 Builder</button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0"></div>
+    <button class="nav-btn" style="color:var(--pink)" onclick="showSection('qbank')">📚 Q-Bank</button>
+    <button class="nav-btn" style="color:#ffd700" onclick="showSection('gamemode')">🎮 Game</button>
+    <button class="nav-btn" style="color:#a8ff78" onclick="showSection('whiteboard')">✏️ Board</button>
+    <button class="nav-btn" style="color:#f093fb" onclick="showSection('perf')">📊 Perf</button>
   </div>
 </nav>
 
@@ -311,6 +430,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <div class="sidebar-item" onclick="showSection('simulator')"><div class="sidebar-dot" style="background:var(--amber)"></div>Distributed Simulator</div>
     <div class="sidebar-item" onclick="showSection('interview')"><div class="sidebar-dot" style="background:var(--green)"></div>Interview Practice</div>
     <div class="sidebar-item" onclick="showSection('builder')"><div class="sidebar-dot" style="background:var(--purple)"></div>Architecture Builder</div>
+  </div>
+  <div class="sidebar-section" style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
+    <div class="sidebar-heading" style="color:var(--pink)">New Features</div>
+    <div class="sidebar-item" onclick="showSection('qbank')"><div class="sidebar-dot" style="background:var(--pink)"></div>Question Bank</div>
+    <div class="sidebar-item" onclick="showSection('gamemode')"><div class="sidebar-dot" style="background:#ffd700"></div>Game Mode</div>
+    <div class="sidebar-item" onclick="showSection('whiteboard')"><div class="sidebar-dot" style="background:#a8ff78"></div>Whiteboard</div>
+    <div class="sidebar-item" onclick="showSection('perf')"><div class="sidebar-dot" style="background:#f093fb"></div>Perf Analyzer</div>
   </div>
 </aside>
 
@@ -2053,14 +2179,241 @@ span.<span class="fn">setAttribute</span>(<span class="str">'order.id'</span>, o
   <div class="card"><div class="card-title" style="font-size:14px">Tips</div><div style="font-size:12px;color:var(--text2);line-height:1.7">• Nodes snap to 40px grid automatically<br>• Double-click a node to rename it<br>• Connections show animated request flow<br>• Red glow = bottleneck in simulation mode</div></div>
   <div class="card" id="builder-stats"><div class="card-title" style="font-size:14px">Architecture Stats</div><div id="builder-stat-body" style="font-size:12px;color:var(--text2);line-height:1.7">Nodes: 0 &nbsp;·&nbsp; Edges: 0<br>Add components to start building.</div></div>
 </div>
+
+<div id="advisor-panel">
+  <h4>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#00e5ff" stroke-width="1.5"/><path d="M8 5v4M8 11v1" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Architecture Advisor
+  </h4>
+  <div id="advisor-tips" style="color:var(--text3);font-size:13px">Build an architecture to receive AI-powered suggestions.</div>
+</div>
+</div>
+
+<!-- ═══════════════════════ QUESTION BANK ═══════════════════════ -->
+<div class="section" id="section-qbank">
+<div class="page-title">Interview Question Bank</div>
+<div class="page-subtitle">Real FAANG system design questions with animated solutions</div>
+
+<div class="qb-filter-row">
+  <span style="font-size:12px;color:var(--text3);margin-right:4px">FILTER:</span>
+  <button class="qb-filter-btn on" onclick="qbFilter('all',this)">All</button>
+  <button class="qb-filter-btn" onclick="qbFilter('beginner',this)">Beginner</button>
+  <button class="qb-filter-btn" onclick="qbFilter('intermediate',this)">Intermediate</button>
+  <button class="qb-filter-btn" onclick="qbFilter('advanced',this)">Advanced</button>
+</div>
+
+<div class="qb-grid" id="qb-grid"><!-- filled by JS --></div>
+<div class="qb-detail" id="qb-detail"><!-- filled by JS --></div>
+</div>
+
+<!-- ═══════════════════════ GAME MODE ═══════════════════════ -->
+<div class="section" id="section-gamemode">
+<div class="page-title">Distributed Systems Game</div>
+<div class="page-subtitle">Keep your system alive under increasing load — scale or fail!</div>
+
+<div class="game-hud">
+  <div class="game-stat"><div class="game-stat-val" id="g-score" style="color:var(--cyan)">0</div><div class="game-stat-label">Score</div></div>
+  <div class="game-stat"><div class="game-stat-val" id="g-avail" style="color:var(--green)">100%</div><div class="game-stat-label">Availability</div></div>
+  <div class="game-stat"><div class="game-stat-val" id="g-latency" style="color:var(--amber)">12ms</div><div class="game-stat-label">P99 Latency</div></div>
+  <div class="game-stat"><div class="game-stat-val" id="g-budget" style="color:var(--purple)">$1000</div><div class="game-stat-label">Budget</div></div>
+</div>
+
+<div class="game-actions">
+  <button class="game-action-btn" style="background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.25)" onclick="gameAction('addServer')">
+    <span class="game-action-cost">$50</span>+ Server
+  </button>
+  <button class="game-action-btn" style="background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.25)" onclick="gameAction('addCache')">
+    <span class="game-action-cost">$30</span>+ Cache
+  </button>
+  <button class="game-action-btn" style="background:rgba(255,165,0,.12);color:var(--amber);border:1px solid rgba(255,165,0,.25)" onclick="gameAction('addQueue')">
+    <span class="game-action-cost">$40</span>+ Queue
+  </button>
+  <button class="game-action-btn" style="background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)" onclick="gameAction('addReplica')">
+    <span class="game-action-cost">$60</span>+ DB Replica
+  </button>
+  <button class="game-action-btn" style="background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2)" onclick="gameAction('addCDN')">
+    <span class="game-action-cost">$20</span>+ CDN
+  </button>
+  <button class="game-action-btn" style="background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--border2);margin-left:auto" onclick="gameStart()">▶ New Game</button>
+</div>
+
+<div class="game-wrap">
+  <canvas id="game-canvas"></canvas>
+  <div class="game-overlay" id="game-overlay">
+    <h2 style="color:var(--cyan)">System Design Game</h2>
+    <p style="color:var(--text2);margin-bottom:24px;text-align:center;max-width:380px">Keep your distributed system alive as traffic increases. React to failures by adding components!</p>
+    <button class="btn btn-primary" onclick="gameStart()">▶ Start Game</button>
+  </div>
+</div>
+<div class="game-log" id="game-log"></div>
+
+<div class="grid-3" style="margin-top:16px">
+  <div class="card"><div class="card-title" style="font-size:14px">Scoring</div><div style="font-size:12px;color:var(--text2);line-height:1.7">+1 per second alive<br>+10 per 1000 requests handled<br>−50 for each server crash<br>Bonus for high availability</div></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Events</div><div style="font-size:12px;color:var(--text2);line-height:1.7">🔴 Server crash — reroutes traffic<br>⚡ Cache failure — DB load spikes<br>🌊 Traffic spike — 3× normal load<br>🔀 Network partition — split cluster</div></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Win Condition</div><div style="font-size:12px;color:var(--text2);line-height:1.7">Survive 3 minutes with >95% availability. Latency must stay below 500ms. Achieve 10,000 score to win!</div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════ WHITEBOARD ═══════════════════════ -->
+<div class="section" id="section-whiteboard">
+<div class="page-title">Architecture Whiteboard</div>
+<div class="page-subtitle">Sketch system architectures freely — like Excalidraw for engineers</div>
+
+<div class="wb-toolbar">
+  <button class="wb-tool active" id="wbt-pen" onclick="wbSetTool('pen',this)" title="Pen (P)">✏️</button>
+  <button class="wb-tool" id="wbt-line" onclick="wbSetTool('line',this)" title="Line (L)">╱</button>
+  <button class="wb-tool" id="wbt-arrow" onclick="wbSetTool('arrow',this)" title="Arrow (A)">→</button>
+  <button class="wb-tool" id="wbt-rect" onclick="wbSetTool('rect',this)" title="Rectangle (R)">□</button>
+  <button class="wb-tool" id="wbt-circle" onclick="wbSetTool('circle',this)" title="Circle (C)">○</button>
+  <button class="wb-tool" id="wbt-text" onclick="wbSetTool('text',this)" title="Text (T)">T</button>
+  <button class="wb-tool" id="wbt-select" onclick="wbSetTool('select',this)" title="Select (S)">↖</button>
+  <button class="wb-tool" id="wbt-eraser" onclick="wbSetTool('eraser',this)" title="Eraser (E)">⬜</button>
+  <div class="wb-sep"></div>
+  <!-- Shape stamps -->
+  <button class="wb-tool" onclick="wbStamp('server')" title="Server" style="font-size:12px">SVR</button>
+  <button class="wb-tool" onclick="wbStamp('database')" title="Database" style="font-size:12px">DB</button>
+  <button class="wb-tool" onclick="wbStamp('cache')" title="Cache" style="font-size:12px">CAC</button>
+  <button class="wb-tool" onclick="wbStamp('queue')" title="Queue" style="font-size:12px">QUE</button>
+  <button class="wb-tool" onclick="wbStamp('lb')" title="Load Balancer" style="font-size:11px">LB</button>
+  <button class="wb-tool" onclick="wbStamp('client')" title="Client" style="font-size:12px">CLI</button>
+  <div class="wb-sep"></div>
+  <!-- Colors -->
+  <div class="wb-color-swatch active" style="background:#00e5ff" onclick="wbSetColor('#00e5ff',this)" title="Cyan"></div>
+  <div class="wb-color-swatch" style="background:#ffa500" onclick="wbSetColor('#ffa500',this)" title="Amber"></div>
+  <div class="wb-color-swatch" style="background:#00ff88" onclick="wbSetColor('#00ff88',this)" title="Green"></div>
+  <div class="wb-color-swatch" style="background:#ff4757" onclick="wbSetColor('#ff4757',this)" title="Red"></div>
+  <div class="wb-color-swatch" style="background:#a855f7" onclick="wbSetColor('#a855f7',this)" title="Purple"></div>
+  <div class="wb-color-swatch" style="background:#ffffff" onclick="wbSetColor('#ffffff',this)" title="White"></div>
+  <div class="wb-sep"></div>
+  <!-- Size -->
+  <button class="wb-size-btn active" onclick="wbSetSize(2,this)">S</button>
+  <button class="wb-size-btn" onclick="wbSetSize(4,this)">M</button>
+  <button class="wb-size-btn" onclick="wbSetSize(8,this)">L</button>
+  <div class="wb-sep"></div>
+  <button class="wb-tool" onclick="wbUndo()" title="Undo (Ctrl+Z)" style="font-size:12px">↩</button>
+  <button class="wb-tool" onclick="wbClear()" title="Clear All" style="font-size:12px;color:var(--red)">🗑</button>
+  <button class="wb-tool" onclick="wbExportPNG()" title="Export PNG" style="font-size:12px;margin-left:auto">💾</button>
+</div>
+<div id="wb-wrap">
+  <canvas id="wb-canvas"></canvas>
+</div>
+<div class="grid-3" style="margin-top:16px">
+  <div class="card"><div class="card-title" style="font-size:14px">Keyboard Shortcuts</div><div style="font-size:12px;color:var(--text2);line-height:1.8"><span style="font-family:var(--font-code);color:var(--cyan)">P</span> Pen &nbsp; <span style="font-family:var(--font-code);color:var(--cyan)">L</span> Line &nbsp; <span style="font-family:var(--font-code);color:var(--cyan)">A</span> Arrow<br><span style="font-family:var(--font-code);color:var(--cyan)">R</span> Rect &nbsp; <span style="font-family:var(--font-code);color:var(--cyan)">T</span> Text &nbsp; <span style="font-family:var(--font-code);color:var(--cyan)">E</span> Eraser<br><span style="font-family:var(--font-code);color:var(--cyan)">Ctrl+Z</span> Undo &nbsp; <span style="font-family:var(--font-code);color:var(--cyan)">Del</span> Clear selection</div></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Shape Stamps</div><p style="font-size:12px;color:var(--text2);line-height:1.6">Click SVR/DB/CAC/QUE/LB/CLI toolbar buttons to stamp pre-drawn system components at cursor position. Then connect with Arrow tool.</p></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Export</div><p style="font-size:12px;color:var(--text2);line-height:1.6">Click 💾 to export the whiteboard as PNG. Great for saving your architecture sketches to share with your team.</p></div>
+</div>
+</div>
+
+<!-- ═══════════════════════ PERFORMANCE ANALYZER ═══════════════════════ -->
+<div class="section" id="section-perf">
+<div class="page-title">Performance Analyzer</div>
+<div class="page-subtitle">Latency heatmaps, scalability analysis, and bottleneck detection for your architecture</div>
+
+<div class="perf-tabs">
+  <button class="perf-tab active" onclick="perfSetTab('heatmap',this)">Latency Heatmap</button>
+  <button class="perf-tab" onclick="perfSetTab('scalability',this)">Scalability Analysis</button>
+  <button class="perf-tab" onclick="perfSetTab('capacity',this)">Capacity Planning</button>
+</div>
+
+<!-- Heatmap tab -->
+<div id="perf-heatmap" class="perf-tab-content">
+<div class="heatmap-controls">
+  <div class="heatmap-slider-group">
+    <label>Load</label>
+    <input type="range" min="1" max="100" value="20" oninput="heatmapSetLoad(this.value)" id="hm-load-slider" style="width:100px">
+    <span id="hm-load-val" style="font-family:var(--font-code);font-size:12px;color:var(--cyan);width:40px">20%</span>
+  </div>
+  <div class="heatmap-slider-group">
+    <label>Cache</label>
+    <input type="range" min="0" max="100" value="50" oninput="heatmapSetCache(this.value)" id="hm-cache-slider" style="width:100px">
+    <span id="hm-cache-val" style="font-family:var(--font-code);font-size:12px;color:var(--green);width:40px">50%</span>
+  </div>
+  <div class="heatmap-slider-group">
+    <label>Replicas</label>
+    <input type="range" min="1" max="8" value="2" oninput="heatmapSetReplicas(this.value)" id="hm-replicas-slider" style="width:80px">
+    <span id="hm-replicas-val" style="font-family:var(--font-code);font-size:12px;color:var(--amber);width:20px">2</span>
+  </div>
+  <div class="latency-legend">
+    <span style="font-size:11px;color:var(--text3)">Low</span>
+    <div class="latency-legend-bar"></div>
+    <span style="font-size:11px;color:var(--text3)">High</span>
+  </div>
+</div>
+<canvas id="heatmap-canvas"></canvas>
+</div>
+
+<!-- Scalability tab -->
+<div id="perf-scalability" class="perf-tab-content" style="display:none">
+<div class="analyzer-grid">
+  <div class="analyzer-metric"><div class="analyzer-metric-label">Est. RPS Capacity</div><div class="analyzer-metric-val" id="sa-rps">48K</div><div class="analyzer-metric-sub">requests/second</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-rps-bar" style="width:60%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div></div>
+  <div class="analyzer-metric"><div class="analyzer-metric-label">DB Write Load</div><div class="analyzer-metric-val" id="sa-db" style="color:var(--amber)">72%</div><div class="analyzer-metric-sub">of capacity</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-db-bar" style="width:72%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div></div>
+  <div class="analyzer-metric"><div class="analyzer-metric-label">Cache Hit Ratio</div><div class="analyzer-metric-val" id="sa-cache" style="color:var(--green)">82%</div><div class="analyzer-metric-sub">estimated</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-cache-bar" style="width:82%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div></div>
+  <div class="analyzer-metric"><div class="analyzer-metric-label">P99 Latency</div><div class="analyzer-metric-val" id="sa-lat" style="color:var(--red)">340ms</div><div class="analyzer-metric-sub">under peak load</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-lat-bar" style="width:68%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div></div>
+  <div class="analyzer-metric"><div class="analyzer-metric-label">Network Egress</div><div class="analyzer-metric-val" id="sa-net">2.4GB/s</div><div class="analyzer-metric-sub">estimated bandwidth</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-net-bar" style="width:45%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div></div>
+  <div class="analyzer-metric"><div class="analyzer-metric-label">Fault Tolerance</div><div class="analyzer-metric-val" id="sa-fault" style="color:var(--green)">High</div><div class="analyzer-metric-sub">single node failure: OK</div><div class="analyzer-bar-wrap"><div class="analyzer-bar" id="sa-fault-bar" style="width:88%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div></div>
+</div>
+
+<h3 style="margin-bottom:14px">Bottleneck Analysis</h3>
+<div class="bottleneck-list" id="sa-bottlenecks">
+  <div class="bottleneck-item"><div class="bottleneck-sev high"></div><div><strong style="font-size:13px">Database Write Throughput</strong><p style="font-size:12px;color:var(--text2);margin-top:2px">Single primary at 72% capacity. Add write queue + worker consumers or switch to multi-primary.</p></div></div>
+  <div class="bottleneck-item"><div class="bottleneck-sev med"></div><div><strong style="font-size:13px">API Gateway Single Point</strong><p style="font-size:12px;color:var(--text2);margin-top:2px">API gateway not horizontally scaled. Add 2+ instances behind load balancer.</p></div></div>
+  <div class="bottleneck-item"><div class="bottleneck-sev low"></div><div><strong style="font-size:13px">Cache Eviction Under Load</strong><p style="font-size:12px;color:var(--text2);margin-top:2px">Cache hit ratio drops under 3× load spike. Pre-warm critical keys on startup.</p></div></div>
+</div>
+
+<div class="analyzer-chart-wrap">
+  <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Throughput vs. Latency Curve</div>
+  <canvas id="sa-chart" height="80"></canvas>
+</div>
+</div>
+
+<!-- Capacity Planning tab -->
+<div id="perf-capacity" class="perf-tab-content" style="display:none">
+<div class="card">
+  <div class="card-title">Capacity Calculator</div>
+  <div class="grid-2">
+  <div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px">Daily Active Users</label>
+      <input type="number" class="iv-input" id="cap-dau" value="1000000" oninput="calcCapacity()">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px">Avg Requests per User per Day</label>
+      <input type="number" class="iv-input" id="cap-rpu" value="10" oninput="calcCapacity()">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px">Avg Record Size (bytes)</label>
+      <input type="number" class="iv-input" id="cap-rsize" value="1024" oninput="calcCapacity()">
+    </div>
+    <div>
+      <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:6px">Data Retention (years)</label>
+      <input type="number" class="iv-input" id="cap-ret" value="5" oninput="calcCapacity()">
+    </div>
+  </div>
+  <div id="cap-results" style="background:var(--bg3);border-radius:12px;padding:20px;font-family:var(--font-code);font-size:13px;line-height:2;color:var(--text2)">
+    <!-- filled by JS -->
+  </div>
+  </div>
+</div>
+</div>
+
 </div>
 
 </main>
 </div>
 
+<!-- FOOTER -->
+<footer id="footer">
+  <a href="https://www.linkedin.com/in/thesumitsuman/" target="_blank" rel="noopener">
+    Made with
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin:0 2px">
+      <path d="M8 13.5C8 13.5 2 9.5 2 5.5C2 3.57 3.57 2 5.5 2C6.64 2 7.65 2.55 8 3.36C8.35 2.55 9.36 2 10.5 2C12.43 2 14 3.57 14 5.5C14 9.5 8 13.5 8 13.5Z" fill="#ff4757" stroke="#ff4757" stroke-width="0.5"/>
+    </svg>
+    by <strong>Sumit</strong>
+  </a>
+</footer>
 <script>
 // ─── SECTION NAVIGATION ─────────────────────
-const sections = ['home','lld-basics','solid','patterns','lld-adv','hld','infra','distributed','playground','lab3d','simulator','interview','builder'];
+const sections = ['home','lld-basics','solid','patterns','lld-adv','hld','infra','distributed','playground','lab3d','simulator','interview','builder','qbank','gamemode','whiteboard','perf'];
 function showSection(id){
   sections.forEach(s=>{
     const el=document.getElementById('section-'+s);
@@ -2077,6 +2430,10 @@ function showSection(id){
   if(id==='simulator') setTimeout(()=>initSimulator(),80);
   if(id==='interview') setTimeout(()=>initInterview(),50);
   if(id==='builder') setTimeout(()=>initBuilder(),80);
+  if(id==='qbank') setTimeout(()=>initQBank(),50);
+  if(id==='gamemode') setTimeout(()=>initGame(),80);
+  if(id==='whiteboard') setTimeout(()=>initWhiteboard(),80);
+  if(id==='perf') setTimeout(()=>initPerf(),80);
 }
 
 // ─── TAB SWITCHER ────────────────────────────
@@ -3599,13 +3956,802 @@ function builderExport(){
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='architecture.svg'; a.click();
 }
 
+// ─── ARCHITECTURE ADVISOR ────────────────────
+function runAdvisor(){
+  const tips=document.getElementById('advisor-tips');
+  if(!tips) return;
+  const nodes=builder.nodes, edges=builder.edges;
+  if(!nodes.length){tips.innerHTML='<div style="color:var(--text3);font-size:13px">Build an architecture to receive suggestions.</div>';return;}
+  const types=nodes.map(n=>n.type);
+  const has=t=>types.includes(t);
+  const advice=[];
+  if(!has('Cache')&&has('Database'))advice.push({icon:'⚡',sev:'warn',text:'No Cache detected. Add Redis to reduce DB load by ~70–80%.', impact:'−70% DB queries'});
+  if(!has('CDN')&&(has('Client')||has('Mobile App')))advice.push({icon:'🌐',sev:'info',text:'No CDN. Use CloudFront or Fastly to serve static assets globally.', impact:'−60% origin traffic'});
+  if(nodes.filter(n=>n.type==='Database').length===1&&edges.length>2)advice.push({icon:'🗄',sev:'warn',text:'Single database — add read replicas to handle read-heavy workloads.', impact:'3× read throughput'});
+  if(!has('Message Queue')&&nodes.length>4)advice.push({icon:'📨',sev:'info',text:'Consider a message queue (Kafka/SQS) for async processing and decoupling.', impact:'Better fault isolation'});
+  if(!has('Load Balancer')&&nodes.filter(n=>n.type==='Microservice'||n.type==='Web Server').length>1)advice.push({icon:'⚖️',sev:'crit',text:'Multiple services without a Load Balancer — add one for traffic distribution.', impact:'Required for HA'});
+  if(nodes.length>6&&!has('Monitor'))advice.push({icon:'📊',sev:'info',text:'Complex architecture without monitoring. Add Prometheus + Grafana.', impact:'Observability'});
+  if(!advice.length)advice.push({icon:'✅',sev:'info',text:'Architecture looks solid! Consider chaos testing and SLO definitions.', impact:'Production readiness'});
+  tips.innerHTML=advice.map(a=>`<div class="advisor-tip ${a.sev==='crit'?'crit':a.sev==='warn'?'warn':''}"><div class="advisor-tip-icon">${a.icon}</div><div><div class="advisor-tip-text">${a.text}</div><div class="advisor-tip-impact">Impact: ${a.impact}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// QUESTION BANK
+// ═══════════════════════════════════════════════════════
+const qbData=[
+  {id:'twitter',icon:'🐦',title:'Design Twitter',level:'advanced',scale:'300M DAU, 100M tweets/day',tags:['Fan-out','Cache','Sharding'],
+   desc:'Design a social media platform where users can post 280-char tweets, follow others, and see a real-time feed.',
+   hints:['How do you handle fan-out on write vs fan-out on read?','How does Twitter deliver timelines to 300M users fast?','What happens when a celebrity with 50M followers tweets?'],
+   steps:[{n:'Clarify Requirements',d:'Functional: post, read timeline, follow/unfollow, search, notifications. NFR: 300M DAU, read/write ratio 100:1, global.'},
+          {n:'Estimate Scale',d:'100M tweets/day = 1160/s writes. Timeline reads = 100× = 116K/s. Storage: 100B × 100M × 365 = ~3.6TB/year for tweets.'},
+          {n:'High-Level Design',d:'Client → CDN → Load Balancer → API Gateway → Tweet Service + Timeline Service + Fan-out Service → Redis + MySQL + Cassandra.'},
+          {n:'Timeline Fan-out',d:'Push model for users <10K followers (write to all follower timelines). Pull model for celebrities. Hybrid approach = Twitter\'s actual solution.'},
+          {n:'Data Layer',d:'Tweets: MySQL sharded by user_id. Timelines: Redis sorted sets (tweet_id sorted by time). Search: Elasticsearch. Media: S3 + CDN.'},
+          {n:'Scaling',d:'Shard by user_id hash. Read replicas ×3 per shard. Redis cluster for timelines. Cache popular timelines aggressively. CDN for media.'}]},
+  {id:'uber',icon:'🚗',title:'Design Uber',level:'advanced',scale:'15M rides/day, 5M drivers',tags:['Geospatial','Real-time','Matching'],
+   desc:'Design a ride-sharing platform where riders can request rides and be matched with nearby drivers in real-time.',
+   hints:['How do you store and query millions of driver locations efficiently?','How does the matching algorithm work?','How do you handle surge pricing?'],
+   steps:[{n:'Requirements',d:'Post ride request, match driver, real-time tracking, fare calculation, trip history. 15M rides/day, 5M active drivers.'},
+          {n:'Scale Estimation',d:'GPS updates: 5M drivers × 1/4s = 1.25M writes/sec. Location DB must handle massive write throughput.'},
+          {n:'Location Service',d:'Redis GEOADD for driver positions. GEORADIUS query finds drivers in 2km radius in O(N+log M). Update every 4 seconds.'},
+          {n:'Dispatch Service',d:'Finds k nearest drivers. Sends offer to best candidate (ETA, rating). Handles accept/decline. Uses Kafka for async events.'},
+          {n:'Trip Lifecycle',d:'Requested → Matched → En Route → Trip → Completed. Postgres for ACID guarantees on trip records. Idempotent requests.'},
+          {n:'Scaling Strategy',d:'Redis cluster for location. Partition by city/geohash for locality. Circuit breaker to Maps API. Multi-region for global ops.'}]},
+  {id:'urlshort',icon:'🔗',title:'Design URL Shortener',level:'beginner',scale:'100M URLs/day',tags:['Hashing','Cache','Redirect'],
+   desc:'Design a service like bit.ly that creates short aliases for long URLs and redirects users when the short URL is clicked.',
+   hints:['How do you generate unique short codes?','How do you ensure sub-10ms redirect latency?','How do you handle 100B redirects/day?'],
+   steps:[{n:'Requirements',d:'Shorten URL, redirect, custom alias, expiry, analytics. 100M URLs/day, 10B redirects/day, <10ms latency, 99.99% uptime.'},
+          {n:'Scale Estimation',d:'100M creates/day = 1160/s. 10B redirects/day = 115K/s. 500B × 100M × 5y = 90TB storage. Read/write = 100:1.'},
+          {n:'Short Code Generation',d:'MD5 hash of (longURL + timestamp), take first 7 chars. Collision handling via retry. Counter-based (base62 encode). KGS service.'},
+          {n:'Data Model',d:'id BIGINT PK, short_code VARCHAR(7) INDEXED, long_url TEXT, expires_at, user_id, created_at. MySQL sharded by hash(short_code).'},
+          {n:'Redirect Flow',d:'GET /abc123 → check Redis cache → if miss → MySQL lookup → cache with 24h TTL → return 301 redirect. Cache hit rate >90%.'},
+          {n:'Scaling',d:'MySQL read replicas × 3. Redis cluster. Stateless API fleet. CDN at DNS level (CNAME). Separate analytics service via Kafka.'}]},
+  {id:'youtube',icon:'🎬',title:'Design YouTube',level:'advanced',scale:'2B users, 500hrs/min upload',tags:['CDN','Transcoding','Streaming'],
+   desc:'Design a video hosting and streaming platform that handles massive uploads and serves billions of video views daily.',
+   hints:['How does YouTube transcode 500 hours of video every minute?','How does adaptive bitrate streaming work?','How do you serve 1B hours of video daily with low latency?'],
+   steps:[{n:'Requirements',d:'Upload/stream video, search, subscribe, recommendations, comments. 2B users, 500hrs uploaded/min, 1B hrs watched/day.'},
+          {n:'Scale Estimation',d:'500hrs/min × 1GB/hr = 500GB/min upload. 120+ encoding profiles = 60TB/min processed. 30PB storage/day for all resolutions.'},
+          {n:'Upload Pipeline',d:'Upload → GCS temporary bucket → Kafka event → Transcoding workers (GPU fleet) → 120+ profiles → GCS output → CDN propagation.'},
+          {n:'Streaming',d:'HLS: manifest (.m3u8) lists video segments. Client fetches segments from CDN edge. ABR algorithm switches quality based on bandwidth.'},
+          {n:'CDN Strategy',d:'Open Connect Appliances at ISPs. Top 20% videos cached at edge = 80% of traffic. Origin fallback for long-tail content. Edge in 200+ PoPs.'},
+          {n:'Recommendations',d:'Collaborative filtering + DNN model. 80% of watch time from recommendations. A/B testing infrastructure. Real-time view signals.'}]},
+  {id:'whatsapp',icon:'💬',title:'Design WhatsApp',level:'intermediate',scale:'2B users, 100B msg/day',tags:['WebSocket','Encryption','Presence'],
+   desc:'Design an end-to-end encrypted messaging platform that delivers 100 billion messages per day with sub-second latency.',
+   hints:['How do you route messages between 2B users in real-time?','How does E2E encryption work at scale?','How do you handle offline message delivery?'],
+   steps:[{n:'Requirements',d:'1:1 and group messaging, media, read receipts, E2E encryption, presence. 2B users, 100B msg/day, <1s delivery, 99.99% uptime.'},
+          {n:'Scale Estimation',d:'100B/day = 1.15M msg/s. Each message ~200B. Storage: 20TB/day messages + 100TB/day media. 500M DAU.'},
+          {n:'Message Flow',d:'Alice → WebSocket Server A → Redis Pub/Sub → WebSocket Server B (Bob connected) → Bob. If Bob offline → store in Cassandra → push notify.'},
+          {n:'Storage',d:'Messages: Cassandra (partitioned by conversation_id, sorted by timestamp). Media: S3. Contacts: MySQL. Presence: Redis TTL 60s.'},
+          {n:'E2E Encryption',d:'Signal Protocol: each device has identity key + signed prekey bundle. Server stores encrypted messages it cannot read. Perfect forward secrecy.'},
+          {n:'Scaling',d:'WhatsApp serves 2B users with 50 engineers! Erlang/OTP for concurrency. Each WS server = 100K connections. 1000+ servers total.'}]},
+  {id:'googledocs',icon:'📄',title:'Design Google Docs',level:'advanced',scale:'1B users, real-time collab',tags:['OT','CRDT','WebSocket'],
+   desc:'Design a collaborative document editing platform where multiple users can edit the same document simultaneously.',
+   hints:['How do you handle concurrent edits without conflicts?','What is Operational Transformation?','How do you sync changes across thousands of simultaneous editors?'],
+   steps:[{n:'Requirements',d:'Real-time collaborative editing, comments, version history, offline support, sharing. 1B users, 50M docs/day, <200ms sync.'},
+          {n:'Concurrency Problem',d:'Alice and Bob both insert at position 5. Who wins? Without conflict resolution, the document diverges. This is the core challenge.'},
+          {n:'Operational Transformation',d:'Transform operations relative to each other. Insert("A",5) + concurrent Delete(3) = Insert("A",4). Server is the arbiter of order.'},
+          {n:'Architecture',d:'Client → WebSocket → OT Server → apply transform → broadcast to all connected clients. Redis for active doc sessions. Firestore for persistence.'},
+          {n:'Version History',d:'Every operation stored with timestamp + user. Doc is the accumulated result of all ops from the beginning. Snapshots every N ops for performance.'},
+          {n:'Offline Support',d:'CRDTs for offline-first. Local ops queued. On reconnect: sync diverged history. Merge using vector clocks. No single server required.'}]},
+  {id:'insta',icon:'📷',title:'Design Instagram',level:'intermediate',scale:'1B users, 50M photos/day',tags:['CDN','Feed','Media Storage'],
+   desc:'Design a photo-sharing social network with feeds, stories, discovery, and real-time engagement at massive scale.',
+   hints:['How do you generate feeds for 1B users efficiently?','How do you store and serve 50M photos per day?','How does Instagram discover trending content?'],
+   steps:[{n:'Requirements',d:'Upload photo/video, follow, like, comment, stories, explore, notifications. 1B users, 50M uploads/day, 500M DAU.'},
+          {n:'Scale Estimation',d:'50M photos/day × 5MB avg = 250TB/day raw storage. CDN costs dominate. Multiple resolutions stored (thumbnail, medium, HD).'},
+          {n:'Media Pipeline',d:'Upload → S3 → Lambda trigger → resize to 4 resolutions → CDN push → notify client. All async, zero impact on upload speed.'},
+          {n:'Feed Generation',d:'Pull model for celebrities. Push model for regular users. Hybrid: pre-compute feed on post, skip inactive followers. Redis sorted sets.'},
+          {n:'Data Model',d:'Users: MySQL (sharded by user_id). Photos: Cassandra (partitioned by user_id). Social graph: adjacency list in MySQL or graph DB.'},
+          {n:'Scaling',d:'Instagram was 13 engineers when acquired for $1B. PostgreSQL → Cassandra migration. HAProxy LB. Celery for async tasks. Django backend.'}]},
+  {id:'newsfeed',icon:'📰',title:'Design News Feed',level:'intermediate',scale:'500M users, 500K posts/sec',tags:['Fan-out','Ranking','Cache'],
+   desc:'Design a personalized news feed system like Facebook Feed that ranks and delivers content from friends and pages.',
+   hints:['Push vs pull feed generation — which is better?','How do you rank 1000 posts to show the top 20?','How do you handle the "celebrity problem"?'],
+   steps:[{n:'Requirements',d:'Personalized ranked feed, infinite scroll, post types (text, photo, video), engagement (like/share/comment). 500M users, 500K posts/sec.'},
+          {n:'Feed Generation Strategies',d:'Fan-out on write: pre-compute and push to follower feeds. Fan-out on read: compute at query time. Hybrid: push for regular users, pull for celebs.'},
+          {n:'Ranking Algorithm',d:'ML model trained on: affinity score, edge weight (likes > comments > views), time decay. Re-rank every 5 min. Real-time features via streaming.'},
+          {n:'Feed Storage',d:'Redis sorted sets: {post_id → score}. Each user has a feed list capped at 500 entries. Pagination via score cursor. TTL 24 hours.'},
+          {n:'Post Storage',d:'Cassandra for posts (partition by post_id). MySQL for social graph (follower/following). Elasticsearch for search and discovery.'},
+          {n:'Scaling',d:'Fanout workers scale horizontally via Kafka. Redis cluster with consistent hashing. Read replicas for social graph. CDN for media.'}]}
+];
+
+let qbActive=null;
+
+function initQBank(){
+  const g=document.getElementById('qb-grid');
+  if(!g||g.children.length) return;
+  renderQBGrid('all');
+  setTimeout(()=>calcCapacity(),100);
+}
+
+function renderQBGrid(filter){
+  const g=document.getElementById('qb-grid');
+  const items=filter==='all'?qbData:qbData.filter(q=>q.level===filter);
+  g.innerHTML=items.map(q=>`
+    <div class="qb-card" onclick="qbOpen('${q.id}')">
+      <div class="qb-card-level ${q.level}">${q.level}</div>
+      <div class="qb-card-icon">${q.icon}</div>
+      <div class="qb-card-title">${q.title}</div>
+      <div class="qb-card-scale" style="margin-bottom:10px">Scale: ${q.scale}</div>
+      <div class="qb-card-tags">${q.tags.map(t=>`<span class="badge badge-cyan" style="font-size:10px">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+function qbFilter(f,btn){
+  document.querySelectorAll('.qb-filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderQBGrid(f);
+  document.getElementById('qb-detail').classList.remove('active');
+}
+
+function qbOpen(id){
+  const q=qbData.find(x=>x.id===id);
+  if(!q) return;
+  qbActive=q;
+  const d=document.getElementById('qb-detail');
+  d.classList.add('active');
+  d.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <span style="font-size:32px">${q.icon}</span>
+          <h2 style="font-family:var(--font-display);font-size:26px;font-weight:800">${q.title}</h2>
+          <span class="qb-card-level ${q.level}" style="position:static">${q.level}</span>
+        </div>
+        <p style="color:var(--text2);font-size:14px;line-height:1.6;max-width:700px">${q.desc}</p>
+      </div>
+      <button onclick="document.getElementById('qb-detail').classList.remove('active')" style="background:var(--glass);border:1px solid var(--border2);border-radius:8px;color:var(--text2);padding:6px 14px;cursor:pointer;font-size:12px">✕ Close</button>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div>
+        <h4 style="margin-bottom:10px;font-family:var(--font-display)">Scale</h4>
+        <div style="font-family:var(--font-code);font-size:13px;color:var(--cyan);background:var(--bg3);padding:12px;border-radius:8px;border:1px solid var(--border)">${q.scale}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:10px;font-family:var(--font-display)">Key Hints</h4>
+        <div style="display:flex;flex-direction:column;gap:6px">${q.hints.map(h=>`<div style="font-size:13px;color:var(--text2);display:flex;gap:8px;align-items:flex-start"><span style="color:var(--amber);flex-shrink:0">→</span>${h}</div>`).join('')}</div>
+      </div>
+    </div>
+    <button class="reveal-btn" onclick="qbReveal('${q.id}')">▶ Reveal Step-by-Step Solution</button>
+    <div id="qb-solution-${q.id}" style="display:none;margin-top:20px">
+      <canvas id="qb-canvas-${q.id}" class="qb-solution-canvas active" height="300"></canvas>
+      <div class="qb-steps" style="margin-top:20px" id="qb-steps-${q.id}"></div>
+    </div>`;
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function qbReveal(id){
+  const q=qbData.find(x=>x.id===id);
+  if(!q) return;
+  const sol=document.getElementById(`qb-solution-${id}`);
+  sol.style.display='block';
+  const stepsEl=document.getElementById(`qb-steps-${id}`);
+  stepsEl.innerHTML='';
+  q.steps.forEach((s,i)=>{
+    setTimeout(()=>{
+      const div=document.createElement('div');
+      div.className='qb-step';
+      div.style.opacity='0';div.style.transform='translateY(10px)';div.style.transition='all .4s ease';
+      div.innerHTML=`<div class="qb-step-num">${i+1}</div><div class="qb-step-body"><div class="qb-step-title">${s.n}</div><div class="qb-step-desc">${s.d}</div></div>`;
+      stepsEl.appendChild(div);
+      requestAnimationFrame(()=>{div.style.opacity='1';div.style.transform='translateY(0)';});
+    }, i*300);
+  });
+  setTimeout(()=>qbDrawDiagram(id), 400);
+}
+
+function qbDrawDiagram(id){
+  const canvas=document.getElementById(`qb-canvas-${id}`);
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||700; canvas.height=280;
+  ctx.fillStyle='#0d1424'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  const configs={
+    twitter:{nodes:[['Client',80,140,'#00e5ff'],['CDN',220,60,'#00b4d8'],['LB',220,140,'#ffa500'],['API',380,100,'#a855f7'],['Timeline',380,180,'#a855f7'],['Redis',540,60,'#ff4757'],['MySQL',540,140,'#00ff88'],['Cassandra',540,220,'#00ff88'],['Kafka',680,140,'#ffa500']],
+      edges:[[0,1],[0,2],[2,3],[2,4],[3,5],[3,6],[4,5],[5,7,'dashed'],[3,8,'dashed']]},
+    uber:{nodes:[['Rider',60,100,'#00e5ff'],['Driver',60,200,'#00e5ff'],['Gateway',200,150,'#ffa500'],['Dispatch',360,100,'#a855f7'],['Location',360,200,'#a855f7'],['Redis Geo',520,150,'#ff4757'],['Postgres',660,100,'#00ff88'],['Kafka',660,200,'#ffa500']],
+      edges:[[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[3,6],[6,7,'dashed']]},
+    urlshort:{nodes:[['Client',80,140,'#00e5ff'],['LB',230,140,'#ffa500'],['API Fleet',380,140,'#a855f7'],['Redis',520,80,'#ff4757'],['MySQL',520,200,'#00ff88'],['Kafka',650,140,'#ffa500']],
+      edges:[[0,1],[1,2],[2,3],[3,4,'dashed'],[2,5,'dashed']]},
+    youtube:{nodes:[['User',60,140,'#00e5ff'],['CDN Edge',200,80,'#00b4d8'],['API GW',200,200,'#ffa500'],['Transcode',380,80,'#a855f7'],['S3 Origin',540,80,'#00ff88'],['Cassandra',540,200,'#00ff88'],['Kafka',380,200,'#ffa500']],
+      edges:[[0,1],[0,2],[2,6],[6,3],[3,4],[1,4,'dashed'],[2,5]]},
+    whatsapp:{nodes:[['Alice',60,140,'#00e5ff'],['WS Server A',220,80,'#a855f7'],['WS Server B',220,200,'#a855f7'],['Redis PubSub',380,140,'#ff4757'],['Cassandra',540,100,'#00ff88'],['S3 Media',540,200,'#00ff88'],['Bob',680,140,'#00e5ff']],
+      edges:[[0,1],[1,3],[3,2],[2,6],[3,4,'dashed'],[1,5,'dashed']]},
+    googledocs:{nodes:[['Client A',60,100,'#00e5ff'],['Client B',60,200,'#00e5ff'],['OT Server',240,150,'#ffa500'],['Redis',420,80,'#ff4757'],['Firestore',420,220,'#00ff88'],['Collab WS',600,150,'#a855f7']],
+      edges:[[0,2],[1,2],[2,3],[2,4],[2,5],[5,0,'dashed'],[5,1,'dashed']]},
+    insta:{nodes:[['Client',60,140,'#00e5ff'],['CDN',210,80,'#00b4d8'],['API GW',210,200,'#ffa500'],['Feed Svc',380,80,'#a855f7'],['Media Svc',380,200,'#a855f7'],['Redis',540,80,'#ff4757'],['Cassandra',540,200,'#00ff88'],['S3',680,140,'#6b7280']],
+      edges:[[0,1],[0,2],[2,3],[2,4],[3,5],[4,7],[5,6,'dashed'],[1,7,'dashed']]},
+    newsfeed:{nodes:[['Client',60,140,'#00e5ff'],['Feed API',210,140,'#ffa500'],['Fanout Workers',380,80,'#a855f7'],['Rank Engine',380,200,'#a855f7'],['Redis Feeds',540,80,'#ff4757'],['Cassandra',540,200,'#00ff88'],['Kafka',680,140,'#ffa500']],
+      edges:[[0,1],[1,2],[1,3],[2,4],[3,4],[4,6,'dashed'],[3,5]]}
+  };
+  const cfg=configs[id]||configs.urlshort;
+  const W=canvas.width;
+  // Scale x-coords to canvas width
+  const scaleX=x=>x*(W/760);
+  // Draw edges
+  cfg.edges.forEach(([fi,ti,style])=>{
+    const f=cfg.nodes[fi],t=cfg.nodes[ti];
+    if(!f||!t) return;
+    ctx.beginPath(); ctx.moveTo(scaleX(f[1]),f[2]); ctx.lineTo(scaleX(t[1]),t[2]);
+    ctx.strokeStyle=style==='dashed'?'rgba(255,255,255,0.2)':'rgba(0,229,255,0.55)';
+    ctx.lineWidth=style==='dashed'?1:2;
+    if(style==='dashed') ctx.setLineDash([5,4]); else ctx.setLineDash([]);
+    ctx.stroke(); ctx.setLineDash([]);
+    // Arrowhead
+    const dx=scaleX(t[1])-scaleX(f[1]),dy=t[2]-f[2],ang=Math.atan2(dy,dx);
+    const mx=(scaleX(f[1])+scaleX(t[1]))/2, my=(f[2]+t[2])/2;
+    ctx.save(); ctx.translate(mx,my); ctx.rotate(ang);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-10,-5); ctx.lineTo(-10,5); ctx.closePath();
+    ctx.fillStyle=style==='dashed'?'rgba(255,255,255,0.3)':'rgba(0,229,255,0.7)'; ctx.fill(); ctx.restore();
+  });
+  // Draw nodes
+  cfg.nodes.forEach(([label,ox,oy,color])=>{
+    const x=scaleX(ox),y=oy;
+    ctx.save(); ctx.shadowColor=color; ctx.shadowBlur=10;
+    ctx.fillStyle=color+'22'; ctx.strokeStyle=color; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.roundRect(x-44,y-22,88,44,8); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle=color; ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center';
+    const lines=label.split(' ');
+    lines.forEach((l,i)=>ctx.fillText(l,x,y-4+(i-lines.length/2+.5)*15));
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// GAME MODE
+// ═══════════════════════════════════════════════════════
+let game={
+  canvas:null,ctx:null,animFrame:null,running:false,
+  servers:[],dbNodes:[],cacheNodes:[],queueNodes:[],cdnNodes:[],
+  requests:[],packets:[],score:0,budget:1000,
+  availability:100,latency:12,baseLoad:10,currentLoad:10,
+  time:0,events:[],gameOver:false,won:false,
+  loadInterval:null
+};
+
+function initGame(){
+  const canvas=document.getElementById('game-canvas');
+  if(!canvas) return;
+  if(game.animFrame) cancelAnimationFrame(game.animFrame);
+  game.canvas=canvas; game.ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth; canvas.height=520;
+  document.getElementById('game-overlay').style.display='flex';
+}
+
+function gameStart(){
+  if(!game.canvas) initGame();
+  document.getElementById('game-overlay').style.display='none';
+  clearInterval(game.loadInterval);
+  // Reset state
+  const W=game.canvas.width,H=game.canvas.height;
+  game.servers=[{x:W/2-100,y:H/2-60,label:'API 1',load:0,alive:true,color:'#00e5ff'},
+                {x:W/2+100,y:H/2-60,label:'API 2',load:0,alive:true,color:'#00e5ff'}];
+  game.dbNodes=[{x:W/2,y:H*0.8,label:'DB',load:0,alive:true,color:'#00ff88'}];
+  game.cacheNodes=[]; game.queueNodes=[]; game.cdnNodes=[];
+  game.requests=[]; game.packets=[]; game.score=0; game.budget=1000;
+  game.availability=100; game.latency=12; game.baseLoad=10; game.currentLoad=10;
+  game.time=0; game.events=[]; game.gameOver=false; game.won=false;
+  game.running=true;
+  gameLog('System online. Traffic starting...','ok');
+  updateGameHUD();
+  // Escalate load over time
+  game.loadInterval=setInterval(()=>{
+    if(!game.running) return;
+    game.currentLoad=Math.min(100, game.currentLoad+3);
+    game.score+=1;
+    game.time++;
+    // Random events
+    if(game.time%15===0) triggerGameEvent();
+    if(game.score>=10000&&!game.won){ game.won=true; endGame(true); }
+    updateGameHUD();
+  },1000);
+  gameLoop();
+}
+
+function triggerGameEvent(){
+  const events=['server_crash','cache_fail','traffic_spike','db_slow'];
+  const evt=events[Math.floor(Math.random()*events.length)];
+  if(evt==='server_crash'){
+    const alive=game.servers.filter(s=>s.alive);
+    if(alive.length>0){
+      const victim=alive[Math.floor(Math.random()*alive.length)];
+      victim.alive=false; victim.color='#ff4757';
+      game.availability=Math.max(0,game.availability-15);
+      gameLog(`💥 ${victim.label} crashed! Traffic rerouted.`,'err');
+    }
+  } else if(evt==='cache_fail'){
+    if(game.cacheNodes.length>0){
+      game.cacheNodes[0].alive=false;
+      game.latency=Math.min(500,game.latency*2);
+      gameLog('⚡ Cache node failed! DB load spiking.','warn');
+    } else { gameLog('⚠ No cache — DB taking full load!','warn'); game.latency+=20; }
+  } else if(evt==='traffic_spike'){
+    game.currentLoad=Math.min(100,game.currentLoad+20);
+    gameLog('🌊 Traffic spike! 3× normal load for 30s.','warn');
+    setTimeout(()=>{game.currentLoad=Math.max(10,game.currentLoad-15);},30000);
+  } else if(evt==='db_slow'){
+    if(game.dbNodes.length>0){ game.dbNodes[0].load=90; gameLog('🗄 DB overloaded! Add replicas or cache.','warn'); }
+  }
+  // Check availability
+  const aliveServers=game.servers.filter(s=>s.alive).length;
+  if(aliveServers===0){ game.availability=0; endGame(false); return; }
+  const load=game.currentLoad;
+  const capacity=aliveServers*30 + game.cacheNodes.filter(c=>c.alive).length*20 + game.queueNodes.length*10;
+  if(load>capacity){ game.availability=Math.max(0,game.availability-10); game.latency=Math.min(500,game.latency+30); }
+  if(game.availability<20 && game.cacheNodes.length===0 && game.queueNodes.length===0){ endGame(false); }
+}
+
+function gameAction(action){
+  if(!game.running) return;
+  const costs={addServer:50,addCache:30,addQueue:40,addReplica:60,addCDN:20};
+  const cost=costs[action]||0;
+  if(game.budget<cost){ gameLog('Insufficient budget!','err'); return; }
+  game.budget-=cost;
+  const W=game.canvas.width, H=game.canvas.height;
+  if(action==='addServer'){
+    const n=game.servers.length+1;
+    game.servers.push({x:W*0.2+n*90,y:H/2-60,label:`API ${n+1}`,load:0,alive:true,color:'#00e5ff'});
+    game.availability=Math.min(100,game.availability+10); gameLog('+ API Server added. Capacity increased.','ok');
+  } else if(action==='addCache'){
+    game.cacheNodes.push({x:W*0.7,y:H*0.35,label:'Redis',alive:true,color:'#ff4757'});
+    game.latency=Math.max(5,game.latency/2); gameLog('+ Redis Cache added. Latency halved!','ok');
+  } else if(action==='addQueue'){
+    game.queueNodes.push({x:W*0.15,y:H*0.65,label:'Kafka',alive:true,color:'#ffa500'});
+    game.availability=Math.min(100,game.availability+8); gameLog('+ Message Queue added. Async decoupling enabled.','ok');
+  } else if(action==='addReplica'){
+    game.dbNodes.push({x:W*0.7,y:H*0.8,label:'DB Replica',load:0,alive:true,color:'#00ff88'});
+    game.availability=Math.min(100,game.availability+12); gameLog('+ DB Replica added. Read capacity doubled.','ok');
+  } else if(action==='addCDN'){
+    game.cdnNodes.push({x:W*0.85,y:H*0.2,label:'CDN',alive:true,color:'#00b4d8'});
+    game.latency=Math.max(5,game.latency-8); gameLog('+ CDN added. Static asset load reduced.','ok');
+  }
+  updateGameHUD();
+}
+
+function endGame(won){
+  game.running=false; game.gameOver=true;
+  clearInterval(game.loadInterval);
+  const overlay=document.getElementById('game-overlay');
+  overlay.style.display='flex';
+  overlay.innerHTML=`<div style="text-align:center">
+    <h2 style="color:${won?'#00ff88':'#ff4757'};font-family:var(--font-display)">${won?'🏆 System Survived!':'💥 System Overloaded!'}</h2>
+    <p style="color:var(--text2);margin:12px 0 8px">${won?'Excellent! You maintained 99.9% availability!':'Your system couldn\'t handle the load.'}</p>
+    <div style="font-family:var(--font-code);font-size:28px;color:var(--cyan);margin:16px 0">${game.score.toLocaleString()} pts</div>
+    <div style="display:flex;gap:16px;justify-content:center;margin-bottom:20px">
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--green)">${game.availability.toFixed(0)}%</div><div style="font-size:11px;color:var(--text3)">Availability</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--amber)">${game.latency}ms</div><div style="font-size:11px;color:var(--text3)">P99 Latency</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--purple)">$${1000-game.budget}</div><div style="font-size:11px;color:var(--text3)">Spent</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="gameStart()">▶ Play Again</button>
+  </div>`;
+}
+
+function updateGameHUD(){
+  const el=id=>document.getElementById(id);
+  if(el('g-score')) el('g-score').textContent=game.score.toLocaleString();
+  if(el('g-avail')){
+    el('g-avail').textContent=game.availability.toFixed(0)+'%';
+    el('g-avail').style.color=game.availability>95?'#00ff88':game.availability>80?'#ffa500':'#ff4757';
+  }
+  if(el('g-latency')){
+    el('g-latency').textContent=game.latency+'ms';
+    el('g-latency').style.color=game.latency<50?'#00ff88':game.latency<200?'#ffa500':'#ff4757';
+  }
+  if(el('g-budget')) el('g-budget').textContent='$'+game.budget;
+}
+
+function gameLoop(){
+  if(!game.running&&!game.gameOver) return;
+  game.animFrame=requestAnimationFrame(gameLoop);
+  const {ctx,canvas,servers,dbNodes,cacheNodes,queueNodes,cdnNodes} = game;
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a0f1e'; ctx.fillRect(0,0,W,H);
+  // Grid dots
+  for(let x=0;x<W;x+=40) for(let y=0;y<H;y+=40){
+    ctx.beginPath(); ctx.arc(x,y,1,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fill();
+  }
+  // Spawn requests
+  if(game.running && Math.random()<game.currentLoad/200){
+    const target=servers.filter(s=>s.alive)[Math.floor(Math.random()*servers.filter(s=>s.alive).length)];
+    if(target){
+      game.packets.push({x:-20,y:H*0.1+Math.random()*H*0.3,tx:target.x,ty:target.y,progress:0,speed:0.02+Math.random()*0.02,color:'#00e5ff',target});
+    }
+  }
+  // Update packets
+  game.packets=game.packets.filter(p=>{
+    p.progress+=p.speed;
+    if(p.progress>=1){
+      // Bounce to DB
+      const db=dbNodes.filter(d=>d.alive)[0];
+      if(db&&Math.random()>0.5) game.packets.push({x:p.target.x,y:p.target.y,tx:db.x,ty:db.y,progress:0,speed:0.03,color:game.cacheNodes.length?'#ff4757':'#00ff88',target:db});
+      if(p.target.alive) p.target.load=Math.min(100,p.target.load+2);
+      game.score+=1;
+      return false;
+    }
+    const px=p.x+(p.tx-p.x)*p.progress, py=p.y+(p.ty-p.y)*p.progress;
+    ctx.beginPath(); ctx.arc(px,py,4,0,Math.PI*2);
+    ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=6; ctx.fill(); ctx.shadowBlur=0;
+    return true;
+  });
+  // Draw all nodes
+  const allNodes=[...servers,...dbNodes,...cacheNodes,...queueNodes,...cdnNodes];
+  allNodes.forEach(n=>{
+    if(!n) return;
+    const col=n.alive?(n.load>80?'#ff4757':n.color):'rgba(255,71,87,0.4)';
+    ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=n.alive?12:0;
+    ctx.fillStyle=col+'22'; ctx.strokeStyle=col; ctx.lineWidth=n.alive?2:1;
+    ctx.beginPath(); ctx.roundRect(n.x-44,n.y-22,88,44,10); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle=n.alive?col:'rgba(255,71,87,0.5)';
+    ctx.font='bold 12px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(n.label,n.x,n.y+4);
+    if(n.load>0&&n.alive){
+      ctx.fillStyle=n.load>80?'#ff4757':'rgba(255,255,255,0.4)';
+      ctx.font='10px JetBrains Mono,monospace';
+      ctx.fillText(Math.round(n.load)+'%',n.x,n.y+38);
+    }
+    // Decay load
+    if(n.load>0) n.load=Math.max(0,n.load-0.5);
+  });
+  // Load bar
+  ctx.fillStyle='rgba(255,255,255,0.05)'; ctx.fillRect(20,H-30,W-40,8); ctx.beginPath();
+  const lw=(game.currentLoad/100)*(W-40);
+  const lg=ctx.createLinearGradient(20,0,20+lw,0);
+  lg.addColorStop(0,'#00ff88'); lg.addColorStop(0.6,'#ffa500'); lg.addColorStop(1,'#ff4757');
+  ctx.fillStyle=lg; ctx.fillRect(20,H-30,lw,8);
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText(`Traffic Load: ${game.currentLoad.toFixed(0)}%`,20,H-36);
+}
+
+function gameLog(msg,type=''){
+  const el=document.getElementById('game-log');
+  if(!el) return;
+  const d=document.createElement('div');
+  d.style.color=type==='ok'?'#00ff88':type==='err'?'#ff4757':type==='warn'?'#ffa500':'#9ca3af';
+  d.textContent=`[${new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'})}] ${msg}`;
+  el.appendChild(d); el.scrollTop=el.scrollHeight;
+  if(el.children.length>50) el.removeChild(el.firstChild);
+}
+
+// ═══════════════════════════════════════════════════════
+// WHITEBOARD
+// ═══════════════════════════════════════════════════════
+let wb={
+  canvas:null,ctx:null,tool:'pen',color:'#00e5ff',size:2,
+  drawing:false,history:[],redoStack:[],startX:0,startY:0,
+  snapshot:null,shapes:[],texts:[],selectedText:null
+};
+
+const wbStamps={
+  server:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(x-44,y-24,88,48,6); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-44,y-8); ctx.lineTo(x+44,y-8); ctx.strokeStyle=c+'60'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle=c; ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('SERVER',x,y+8);
+  },w:88,h:48},
+  database:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.ellipse(x,y-20,40,12,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-40,y-20); ctx.lineTo(x-40,y+20); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+40,y-20); ctx.lineTo(x+40,y+20); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x,y+20,40,12,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=c; ctx.font='bold 10px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('DATABASE',x,y+5);
+  },w:80,h:56},
+  cache:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(x-40,y-20,80,40,20); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=c; ctx.font='bold 10px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('CACHE',x,y+4);
+  },w:80,h:40},
+  queue:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(x-50,y-18,100,36,4); ctx.fill(); ctx.stroke();
+    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(x+i*18,y-18);ctx.lineTo(x+i*18,y+18);ctx.strokeStyle=c+'40';ctx.lineWidth=1;ctx.stroke();}
+    ctx.fillStyle=c; ctx.font='bold 10px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.strokeStyle=c; ctx.lineWidth=2; ctx.fillText('QUEUE',x,y+4);
+  },w:100,h:36},
+  lb:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    const pts=[[x,y-26],[x+24,y+20],[x-24,y+20]];
+    ctx.beginPath(); ctx.moveTo(...pts[0]); ctx.lineTo(...pts[1]); ctx.lineTo(...pts[2]); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=c; ctx.font='bold 9px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('LB',x,y+8);
+  },w:48,h:52},
+  client:{draw:(ctx,x,y,c)=>{
+    ctx.strokeStyle=c; ctx.fillStyle=c+'20'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(x,y-14,16,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-22,y+22); ctx.quadraticCurveTo(x,y+2,x+22,y+22); ctx.stroke();
+    ctx.fillStyle=c; ctx.font='bold 9px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('CLIENT',x,y+38);
+  },w:44,h:50}
+};
+
+function initWhiteboard(){
+  const canvas=document.getElementById('wb-canvas');
+  const wrap=document.getElementById('wb-wrap');
+  if(!canvas||!wrap||wb.canvas===canvas) return;
+  wb.canvas=canvas; wb.ctx=canvas.getContext('2d');
+  canvas.width=wrap.clientWidth||900; canvas.height=560;
+  wrap.style.height='560px';
+  canvas.style.width='100%'; canvas.style.height='560px';
+  ctx_wb_fill();
+  canvas.addEventListener('mousedown',wbDown);
+  canvas.addEventListener('mousemove',wbMove);
+  canvas.addEventListener('mouseup',wbUp);
+  canvas.addEventListener('mouseleave',wbUp);
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e=>{
+    if(document.getElementById('section-whiteboard')?.classList.contains('active')){
+      const map={p:'pen',l:'line',a:'arrow',r:'rect',c:'circle',t:'text',s:'select',e:'eraser'};
+      if(map[e.key.toLowerCase()] && !e.ctrlKey){ wbSetTool(map[e.key.toLowerCase()],document.getElementById('wbt-'+map[e.key.toLowerCase()])); }
+      if(e.ctrlKey&&e.key==='z') wbUndo();
+    }
+  });
+}
+
+function ctx_wb_fill(){
+  const {ctx,canvas}=wb;
+  ctx.fillStyle='#0d1424'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Dot grid
+  for(let x=20;x<canvas.width;x+=40) for(let y=20;y<canvas.height;y+=40){
+    ctx.beginPath(); ctx.arc(x,y,1.2,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,229,255,0.08)'; ctx.fill();
+  }
+}
+
+function wbDown(e){
+  wb.drawing=true;
+  const{x,y}=wbPos(e);
+  wb.startX=x; wb.startY=y;
+  if(wb.tool==='pen'||wb.tool==='eraser'){
+    wb.ctx.beginPath(); wb.ctx.moveTo(x,y);
+    saveWbSnapshot();
+  } else if(wb.tool==='text'){
+    const text=prompt('Enter text:');
+    if(text){
+      wb.ctx.fillStyle=wb.color; wb.ctx.font=`${wb.size*6+10}px JetBrains Mono,monospace`;
+      wb.ctx.fillText(text,x,y);
+      saveWbHistory();
+    }
+    wb.drawing=false;
+  } else { saveWbSnapshot(); }
+}
+
+function wbMove(e){
+  if(!wb.drawing) return;
+  const{x,y}=wbPos(e);
+  if(wb.tool==='pen'){
+    wb.ctx.strokeStyle=wb.color; wb.ctx.lineWidth=wb.size;
+    wb.ctx.lineCap='round'; wb.ctx.lineJoin='round';
+    wb.ctx.lineTo(x,y); wb.ctx.stroke();
+  } else if(wb.tool==='eraser'){
+    wb.ctx.strokeStyle='#0d1424'; wb.ctx.lineWidth=wb.size*5;
+    wb.ctx.lineCap='round'; wb.ctx.lineTo(x,y); wb.ctx.stroke();
+  } else {
+    // Restore snapshot and redraw preview
+    if(wb.snapshot) wb.ctx.putImageData(wb.snapshot,0,0);
+    const dx=x-wb.startX, dy=y-wb.startY;
+    wb.ctx.strokeStyle=wb.color; wb.ctx.fillStyle=wb.color+'15';
+    wb.ctx.lineWidth=wb.size; wb.ctx.lineCap='round';
+    if(wb.tool==='line'){ wb.ctx.beginPath(); wb.ctx.moveTo(wb.startX,wb.startY); wb.ctx.lineTo(x,y); wb.ctx.stroke(); }
+    else if(wb.tool==='arrow'){
+      wb.ctx.beginPath(); wb.ctx.moveTo(wb.startX,wb.startY); wb.ctx.lineTo(x,y); wb.ctx.stroke();
+      const ang=Math.atan2(y-wb.startY,x-wb.startX);
+      const hlen=14+wb.size*2;
+      wb.ctx.beginPath(); wb.ctx.moveTo(x,y);
+      wb.ctx.lineTo(x-hlen*Math.cos(ang-0.4),y-hlen*Math.sin(ang-0.4));
+      wb.ctx.lineTo(x-hlen*Math.cos(ang+0.4),y-hlen*Math.sin(ang+0.4));
+      wb.ctx.closePath(); wb.ctx.fillStyle=wb.color; wb.ctx.fill();
+    }
+    else if(wb.tool==='rect'){ wb.ctx.beginPath(); wb.ctx.roundRect(wb.startX,wb.startY,dx,dy,4); wb.ctx.fill(); wb.ctx.stroke(); }
+    else if(wb.tool==='circle'){ wb.ctx.beginPath(); wb.ctx.ellipse(wb.startX+dx/2,wb.startY+dy/2,Math.abs(dx/2),Math.abs(dy/2),0,0,Math.PI*2); wb.ctx.fill(); wb.ctx.stroke(); }
+  }
+}
+
+function wbUp(){
+  if(!wb.drawing) return;
+  wb.drawing=false;
+  if(wb.tool!=='pen'&&wb.tool!=='eraser') saveWbHistory();
+}
+
+function saveWbSnapshot(){ wb.snapshot=wb.ctx.getImageData(0,0,wb.canvas.width,wb.canvas.height); }
+function saveWbHistory(){ wb.history.push(wb.ctx.getImageData(0,0,wb.canvas.width,wb.canvas.height)); if(wb.history.length>40) wb.history.shift(); }
+function wbUndo(){ if(wb.history.length>0){ wb.ctx.putImageData(wb.history.pop(),0,0); } else { ctx_wb_fill(); } }
+function wbClear(){ wb.history=[]; ctx_wb_fill(); }
+function wbPos(e){ const r=wb.canvas.getBoundingClientRect(); return{x:(e.clientX-r.left)*(wb.canvas.width/r.width),y:(e.clientY-r.top)*(wb.canvas.height/r.height)}; }
+function wbSetTool(t,btn){ wb.tool=t; document.querySelectorAll('.wb-tool[id^="wbt-"]').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); }
+function wbSetColor(c,el){ wb.color=c; document.querySelectorAll('.wb-color-swatch').forEach(s=>s.classList.remove('active')); if(el)el.classList.add('active'); }
+function wbSetSize(s,btn){ wb.size=s; document.querySelectorAll('.wb-size-btn').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); }
+function wbStamp(type){
+  const s=wbStamps[type];
+  if(!s||!wb.canvas) return;
+  saveWbSnapshot();
+  s.draw(wb.ctx,wb.canvas.width/2,wb.canvas.height/2,wb.color);
+  saveWbHistory();
+}
+function wbExportPNG(){
+  const a=document.createElement('a'); a.href=wb.canvas.toDataURL('image/png');
+  a.download='architecture-whiteboard.png'; a.click();
+}
+
+// ═══════════════════════════════════════════════════════
+// PERFORMANCE ANALYZER
+// ═══════════════════════════════════════════════════════
+let perf={heatmapLoad:20,heatmapCache:50,heatmapReplicas:2,saChart:null,animFrame:null};
+
+function initPerf(){
+  drawHeatmap();
+  initSAChart();
+  calcCapacity();
+}
+
+function perfSetTab(tab,btn){
+  document.querySelectorAll('.perf-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.perf-tab-content').forEach(el=>el.style.display='none');
+  const el=document.getElementById('perf-'+tab);
+  if(el) el.style.display='block';
+  if(tab==='heatmap') drawHeatmap();
+  if(tab==='scalability') { initSAChart(); animateSABars(); }
+  if(tab==='capacity') calcCapacity();
+}
+
+function heatmapSetLoad(v){ perf.heatmapLoad=parseInt(v); document.getElementById('hm-load-val').textContent=v+'%'; drawHeatmap(); }
+function heatmapSetCache(v){ perf.heatmapCache=parseInt(v); document.getElementById('hm-cache-val').textContent=v+'%'; drawHeatmap(); }
+function heatmapSetReplicas(v){ perf.heatmapReplicas=parseInt(v); document.getElementById('hm-replicas-val').textContent=v; drawHeatmap(); }
+
+function drawHeatmap(){
+  const canvas=document.getElementById('heatmap-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||900; canvas.height=420;
+  const W=canvas.width,H=canvas.height;
+  ctx.fillStyle='#0c1120'; ctx.fillRect(0,0,W,H);
+  const {heatmapLoad:load, heatmapCache:cache, heatmapReplicas:replicas}=perf;
+  // Compute latencies
+  const clientLat=5;
+  const lbLat=2+load*0.1;
+  const apiLat=10+load*0.5*(1-cache/200);
+  const cacheLat=cache>20?1+load*0.05:999;
+  const dbLat=cache>30?5+load*(1-cache/150):30+load*2;
+  const adjustedDb=dbLat/Math.max(1,replicas*0.6);
+  const maxLat=Math.max(clientLat,lbLat,apiLat,cacheLat===999?0:cacheLat,adjustedDb);
+  function latColor(lat){
+    const t=Math.min(1,lat/Math.max(maxLat,100));
+    const r=Math.round(t>0.5?(t-0.5)*2*255:0);
+    const g=Math.round(t<0.5?t*2*255:(1-t)*2*255);
+    return `rgb(${r},${g},30)`;
+  }
+  // Nodes layout
+  const nodes=[
+    {label:'Client',x:W*0.08,y:H*0.5,lat:clientLat,icon:'CLIENT'},
+    {label:'CDN',x:W*0.22,y:H*0.22,lat:Math.max(1,clientLat/2),icon:'CDN'},
+    {label:'Load Balancer',x:W*0.22,y:H*0.6,lat:lbLat,icon:'LB'},
+    {label:'API Server',x:W*0.42,y:H*0.4,lat:apiLat,icon:'API'},
+    {label:'Cache',x:W*0.57,y:H*0.2,lat:cache>20?cacheLat:0,icon:'CACHE'},
+    {label:'DB Primary',x:W*0.72,y:H*0.5,lat:adjustedDb,icon:'DB'},
+    {label:'DB Replica',x:W*0.85,y:H*0.7,lat:adjustedDb*0.6,icon:'REPLICA'},
+  ];
+  // Draw edges with heatmap coloring
+  const edges=[[0,2],[0,1],[1,3],[2,3],[3,4],[3,5],[5,6]];
+  edges.forEach(([fi,ti])=>{
+    const f=nodes[fi],t=nodes[ti];
+    const edgeLat=(f.lat+t.lat)/2;
+    const col=latColor(edgeLat);
+    ctx.beginPath(); ctx.moveTo(f.x,f.y); ctx.lineTo(t.x,t.y);
+    ctx.strokeStyle=col; ctx.lineWidth=3; ctx.stroke();
+    // Arrow
+    const ang=Math.atan2(t.y-f.y,t.x-f.x);
+    const mx=(f.x+t.x)/2,my=(f.y+t.y)/2;
+    ctx.save(); ctx.translate(mx,my); ctx.rotate(ang);
+    ctx.beginPath(); ctx.moveTo(8,0); ctx.lineTo(-4,-5); ctx.lineTo(-4,5); ctx.closePath();
+    ctx.fillStyle=col; ctx.fill(); ctx.restore();
+    // Latency label on edge
+    ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font='10px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(Math.round(edgeLat)+'ms',mx,my-8);
+  });
+  // Draw nodes
+  nodes.forEach(n=>{
+    if(n.lat===0||n.lat===999) return;
+    const col=latColor(n.lat);
+    ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=n.lat>100?20:10;
+    ctx.fillStyle=col+'33'; ctx.strokeStyle=col; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(n.x-46,n.y-24,92,48,8); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle=col; ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(n.icon,n.x,n.y-3);
+    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='10px JetBrains Mono,monospace';
+    ctx.fillText(Math.round(n.lat)+'ms',n.x,n.y+14);
+    // Pulsing ring for high-latency nodes
+    if(n.lat>50){ const pulse=0.6+0.4*Math.sin(Date.now()*0.004); ctx.strokeStyle=`rgba(255,71,87,${pulse})`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(n.x,n.y,32,0,Math.PI*2); ctx.stroke(); }
+  });
+  // P99 latency summary
+  const totalPath=clientLat+lbLat+apiLat+(cache>20?cacheLat:adjustedDb);
+  const p99=Math.round(totalPath*2.5);
+  ctx.fillStyle='rgba(12,17,32,0.8)'; ctx.beginPath(); ctx.roundRect(W-180,10,170,52,8); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle=p99<100?'#00ff88':p99<300?'#ffa500':'#ff4757';
+  ctx.font='bold 22px JetBrains Mono,monospace'; ctx.textAlign='center'; ctx.fillText('P99: '+p99+'ms',W-95,38);
+  ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='10px Inter,sans-serif'; ctx.fillText('end-to-end latency',W-95,55);
+  // Animate
+  if(perf.animFrame) cancelAnimationFrame(perf.animFrame);
+  perf.animFrame=requestAnimationFrame(drawHeatmap);
+}
+
+function initSAChart(){
+  const canvas=document.getElementById('sa-chart');
+  if(!canvas||!window.Chart) return;
+  if(perf.saChart) perf.saChart.destroy();
+  const labels=['0','10K','20K','40K','80K','120K','200K'];
+  const latData=[8,12,18,32,80,180,500];
+  const throughput=[0,10,20,40,80,120,140];
+  perf.saChart=new Chart(canvas,{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'P99 Latency (ms)',data:latData,borderColor:'#ff4757',backgroundColor:'rgba(255,71,87,0.08)',yAxisID:'y1',tension:.4,fill:true},
+      {label:'Throughput (K RPS)',data:throughput,borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.08)',yAxisID:'y2',tension:.4,fill:true}
+    ]},
+    options:{responsive:true,animation:{duration:1000},plugins:{legend:{labels:{color:'#9ca3af',font:{family:'Inter'}}}},scales:{
+      x:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,0.05)'}},
+      y1:{position:'left',ticks:{color:'#ff4757'},grid:{color:'rgba(255,71,87,0.05)'},title:{display:true,text:'Latency (ms)',color:'#ff4757'}},
+      y2:{position:'right',ticks:{color:'#00e5ff'},grid:{display:false},title:{display:true,text:'Throughput (K RPS)',color:'#00e5ff'}}
+    }}
+  });
+}
+
+function animateSABars(){
+  const bars=[['sa-rps-bar',60],['sa-db-bar',72],['sa-cache-bar',82],['sa-lat-bar',68],['sa-net-bar',45],['sa-fault-bar',88]];
+  bars.forEach(([id,w])=>{
+    const el=document.getElementById(id);
+    if(el){el.style.width='0%';setTimeout(()=>{el.style.width=w+'%';},100);}
+  });
+}
+
+function calcCapacity(){
+  const dau=parseInt(document.getElementById('cap-dau')?.value)||1000000;
+  const rpu=parseInt(document.getElementById('cap-rpu')?.value)||10;
+  const rsize=parseInt(document.getElementById('cap-rsize')?.value)||1024;
+  const ret=parseInt(document.getElementById('cap-ret')?.value)||5;
+  const rps=Math.round(dau*rpu/86400);
+  const peakRps=Math.round(rps*3);
+  const storageDay=dau*rsize;
+  const storageTotal=storageDay*365*ret;
+  const bandwidth=Math.round(rps*rsize/1e6);
+  function fmt(bytes){
+    if(bytes>1e12) return (bytes/1e12).toFixed(1)+'TB';
+    if(bytes>1e9) return (bytes/1e9).toFixed(1)+'GB';
+    if(bytes>1e6) return (bytes/1e6).toFixed(1)+'MB';
+    return (bytes/1e3).toFixed(1)+'KB';
+  }
+  const res=document.getElementById('cap-results');
+  if(!res) return;
+  res.innerHTML=`
+    <div style="color:var(--cyan)">Avg RPS: <strong>${rps.toLocaleString()}/s</strong></div>
+    <div style="color:var(--red)">Peak RPS (3×): <strong>${peakRps.toLocaleString()}/s</strong></div>
+    <div style="color:var(--green)">Storage/day: <strong>${fmt(storageDay)}</strong></div>
+    <div style="color:var(--amber)">Total Storage: <strong>${fmt(storageTotal)}</strong></div>
+    <div style="color:var(--purple)">Bandwidth: <strong>${bandwidth} MB/s</strong></div>
+    <div style="color:var(--text2);margin-top:10px;font-size:11px;line-height:1.6">
+      Servers needed (500 RPS/server): <strong style="color:var(--cyan)">${Math.ceil(peakRps/500)}</strong><br>
+      DB replicas (200K IOPS each): <strong style="color:var(--green)">${Math.ceil(peakRps/200000)}</strong><br>
+      Redis nodes (50K ops each): <strong style="color:var(--red)">${Math.ceil(peakRps/50000)}</strong>
+    </div>`;
+}
+
+// ─── BUILDER ADVISOR HOOK ─────────────────────
+const origBuilderDraw = builderDraw;
+let _advisorThrottle=0;
+// Throttled advisor update
+function maybeRunAdvisor(){
+  const now=Date.now();
+  if(now-_advisorThrottle>2000){ _advisorThrottle=now; runAdvisor(); }
+}
+
 window.addEventListener('resize',()=>{
   if(pgCanvas) pgCanvas.width=pgCanvas.offsetWidth;
   renderPgStep();
+  if(wb.canvas){wb.canvas.width=document.getElementById('wb-wrap')?.clientWidth||900;ctx_wb_fill();}
 });
 setTimeout(()=>{
   renderPatternSection('creational');
   initPlayground();
+  calcCapacity();
 },100);
 </script>
 </body>
