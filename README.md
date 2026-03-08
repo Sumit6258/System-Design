@@ -517,6 +517,7 @@ All real-time simulations (Traffic, Chaos, World Map, Simulator) use `<canvas>` 
 - Single draw call per frame
 
 ---
+---
 
 ## Security & Copyright
 
@@ -530,20 +531,42 @@ Unauthorized copying, redistribution, modification, or resale
 of this software is strictly prohibited without written permission.
 ```
 
-### Protection Layers Applied
+---
 
-| Layer | Implementation |
-|---|---|
-| **Copyright Header** | Box-art ASCII block with SHA-256 fingerprint |
-| **JS Obfuscation** | Variable renaming (`trafficState → _0xt5s`, etc.), data structure identifiers |
-| **Base64 Encoding** | Author identity strings encoded with `atob()` |
-| **DOM Watermark** | Invisible `<svg><metadata>` with full SHA-256 signature |
-| **JS Watermark** | `_SDL_AUTHOR`, `_SDL_SIG`, `_SDL_MD5` constants + non-configurable `window._sdlAuthor` |
-| **DevTools Detection** | Window resize heuristic → shows copyright banner |
-| **Context Menu** | Right-click disabled |
-| **Keyboard Shortcuts** | F12, Ctrl+Shift+I/J/C, Ctrl+U all intercepted |
+
+## 📄 License
+
+Copyright © 2026 Sumit Suman. All Rights Reserved.
+
+This project is **not open source** and is not distributed under any open-source license.
+
+### What You Can Do ✅
+- Use the live platform at [sumit6258.github.io/System-Design](https://sumit6258.github.io/System-Design/) freely for personal learning
+- Share the link with others who want to learn system design
+- Reference this project in your portfolio, resume, or blog posts (with attribution)
+- Star and fork the repository for personal reference
+
+### What You Cannot Do ❌
+- Copy, reproduce, or redistribute the source code (in whole or in part)
+- Modify the source code and publish it as your own work
+- Use this project or its contents commercially without written permission
+- Remove or alter copyright notices, watermarks, or authorship signatures
+- Republish this project under a different name or on a different platform
+
+### Attribution
+If you reference this project in any public content (articles, videos, courses, talks),
+you must clearly credit **Sumit Suman** and link to the original:
+> [https://sumit6258.github.io/System-Design/](https://sumit6258.github.io/System-Design/)
+
+### Contact
+For licensing inquiries, collaborations, or permissions beyond the above:
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Sumit%20Suman-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/thesumitsuman/)
 
 ---
+
+> *The source code of this project is legally protected under copyright law.*
+> *Authorship is cryptographically embedded in the code via SHA-256 signature.*
 
 ## Author
 
@@ -551,7 +574,7 @@ of this software is strictly prohibited without written permission.
 
 **Sumit Suman**
 
-Senior Software Engineer | System Design Enthusiast
+Software Engineer | System Design Enthusiast
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/thesumitsuman/)
 
