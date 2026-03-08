@@ -448,32 +448,8 @@ Everything runs client-side in a single HTML file.
 
 ## Getting Started
 
-### Option 1: Open Locally
-```bash
-# Download index.html
-# Double-click to open in any modern browser
-# That's it.
-```
-
-### Option 2: Host on GitHub Pages
-```bash
-# 1. Create a GitHub repository
-# 2. Upload index.html to the root
-# 3. Go to Settings → Pages → Deploy from branch → main / (root)
-# 4. Your site is live at https://yourusername.github.io/repo-name
-```
-
-### Option 3: Host on Netlify / Vercel
-```bash
-# Drag and drop index.html to netlify.com/drop
-# Live URL in 30 seconds
-```
-
-### Option 4: CDN / Self-Host
-```bash
-# Deploy to any static hosting (S3, CloudFront, nginx, Apache)
-# No server-side processing required
-```
+**https://sumit6258.github.io/System-Design/**
+No install. No account. Works in any modern browser.
 
 ### Browser Requirements
 - Chrome 90+ ✅
