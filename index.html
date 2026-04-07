@@ -2084,49 +2084,71 @@ span.<span class="fn">setAttribute</span>(<span class="str">'order.id'</span>, o
 
 
 <div class="section" id="section-gamemode">
-<div class="page-title">Distributed Systems Game</div>
-<div class="page-subtitle">Keep your system alive under increasing load — scale or fail!</div>
-
-<div class="game-hud">
+<div class="page-title">System Architect Survival</div>
+<div class="page-subtitle">Defend your distributed system against real-world failure cascades</div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px">
+  <div class="game-stat"><div class="game-stat-val" id="g-level" style="color:var(--purple)">1/10</div><div class="game-stat-label">Level</div></div>
   <div class="game-stat"><div class="game-stat-val" id="g-score" style="color:var(--cyan)">0</div><div class="game-stat-label">Score</div></div>
   <div class="game-stat"><div class="game-stat-val" id="g-avail" style="color:var(--green)">100%</div><div class="game-stat-label">Availability</div></div>
   <div class="game-stat"><div class="game-stat-val" id="g-latency" style="color:var(--amber)">12ms</div><div class="game-stat-label">P99 Latency</div></div>
+  <div class="game-stat"><div class="game-stat-val" id="g-rps" style="color:var(--cyan)">0</div><div class="game-stat-label">Req/sec</div></div>
   <div class="game-stat"><div class="game-stat-val" id="g-budget" style="color:var(--purple)">$1000</div><div class="game-stat-label">Budget</div></div>
 </div>
-
-<div class="game-actions">
-  <button class="game-action-btn" style="background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.25)" onclick="gameAction('addServer')">
-<span class="game-action-cost">$50</span>+ Server
-  </button>
-  <button class="game-action-btn" style="background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.25)" onclick="gameAction('addCache')">
-<span class="game-action-cost">$30</span>+ Cache
-  </button>
-  <button class="game-action-btn" style="background:rgba(255,165,0,.12);color:var(--amber);border:1px solid rgba(255,165,0,.25)" onclick="gameAction('addQueue')">
-<span class="game-action-cost">$40</span>+ Queue
-  </button>
-  <button class="game-action-btn" style="background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)" onclick="gameAction('addReplica')">
-<span class="game-action-cost">$60</span>+ DB Replica
-  </button>
-  <button class="game-action-btn" style="background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2)" onclick="gameAction('addCDN')">
-<span class="game-action-cost">$20</span>+ CDN
-  </button>
-  <button class="game-action-btn" style="background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--border2);margin-left:auto" onclick="gameStart()">▶ New Game</button>
-</div>
-
-<div class="game-wrap">
-  <canvas id="game-canvas"></canvas>
-  <div class="game-overlay" id="game-overlay">
-<h2 style="color:var(--cyan)">System Design Game</h2>
-<p style="color:var(--text2);margin-bottom:24px;text-align:center;max-width:380px">Keep your distributed system alive as traffic increases. React to failures by adding components!</p>
-<button class="btn btn-primary" onclick="gameStart()">▶ Start Game</button>
+<div style="display:grid;grid-template-columns:1fr 230px;gap:12px">
+  <div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+      <button class="game-action-btn" style="background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.25)" onclick="gameAction('addServer')"><span class="game-action-cost">$50</span>+ API Server</button>
+      <button class="game-action-btn" style="background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.25)" onclick="gameAction('addCache')"><span class="game-action-cost">$40</span>+ Redis Cache</button>
+      <button class="game-action-btn" style="background:rgba(255,165,0,.12);color:var(--amber);border:1px solid rgba(255,165,0,.25)" onclick="gameAction('addQueue')"><span class="game-action-cost">$45</span>+ Kafka Queue</button>
+      <button class="game-action-btn" style="background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)" onclick="gameAction('addReplica')"><span class="game-action-cost">$60</span>+ DB Replica</button>
+      <button class="game-action-btn" style="background:rgba(0,180,216,.12);color:var(--cyan2);border:1px solid rgba(0,180,216,.25)" onclick="gameAction('addCDN')"><span class="game-action-cost">$30</span>+ CDN Node</button>
+      <button class="game-action-btn" style="background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2)" onclick="gameAction('circuitBreaker')"><span class="game-action-cost">$20</span>Circuit Breaker</button>
+      <button class="game-action-btn" style="background:rgba(236,72,153,.1);color:var(--pink);border:1px solid rgba(236,72,153,.25)" onclick="gameAction('rateLimiter')"><span class="game-action-cost">$25</span>Rate Limiter</button>
+      <button class="game-action-btn" style="background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border2);margin-left:auto" onclick="gameStart()">&#9654; New Game</button>
+    </div>
+    <div style="position:relative" class="game-wrap">
+      <canvas id="game-canvas" style="width:100%;display:block;border-radius:14px;border:1px solid var(--border);cursor:pointer;background:#060913"></canvas>
+      <div class="game-overlay" id="game-overlay">
+        <div style="text-align:center;max-width:500px;padding:24px">
+          <div style="font-size:40px;margin-bottom:8px">&#128737;</div>
+          <h2 style="color:var(--cyan);font-family:var(--font-display);font-size:26px;margin-bottom:8px">System Architect Survival</h2>
+          <p style="color:var(--text2);margin-bottom:20px;font-size:14px;line-height:1.6">Defend your distributed system against real-world failure cascades. Build, scale, and survive 10 progressively harder scenarios.</p>
+          <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap" id="diff-btns">
+            <button onclick="_0xg5d('easy',this)" style="padding:8px 14px;border:1px solid var(--border2);border-radius:8px;background:var(--glass);color:var(--green);cursor:pointer;font-family:var(--font-body);font-size:12px">&#9749; Easy<br><span style="font-size:10px;opacity:.7">$2000 budget</span></button>
+            <button onclick="_0xg5d('normal',this)" style="padding:8px 14px;border:2px solid var(--cyan);border-radius:8px;background:rgba(0,229,255,.08);color:var(--cyan);cursor:pointer;font-family:var(--font-body);font-size:12px">&#9889; Normal<br><span style="font-size:10px;opacity:.7">$1000 budget</span></button>
+            <button onclick="_0xg5d('hard',this)" style="padding:8px 14px;border:1px solid var(--border2);border-radius:8px;background:var(--glass);color:var(--red);cursor:pointer;font-family:var(--font-body);font-size:12px">&#128128; Hard<br><span style="font-size:10px;opacity:.7">$500 budget</span></button>
+            <button onclick="_0xg5d('chaos',this)" style="padding:8px 14px;border:1px solid var(--border2);border-radius:8px;background:var(--glass);color:var(--purple);cursor:pointer;font-family:var(--font-body);font-size:12px">&#128293; Chaos<br><span style="font-size:10px;opacity:.7">$200 budget</span></button>
+          </div>
+          <button class="btn btn-primary" style="font-size:15px;padding:14px 36px" onclick="gameStart()">&#9654; Start Game</button>
+        </div>
+      </div>
+      <div id="game-node-tooltip" style="position:absolute;display:none;background:rgba(6,9,19,.97);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;max-width:220px;font-size:12px;pointer-events:none;z-index:20;line-height:1.5;color:var(--text2)"></div>
+    </div>
+    <div class="game-log" id="game-log" style="margin-top:8px;height:88px"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Node Inspector</div>
+      <div id="inspector-content" style="color:var(--text3);font-size:12px;line-height:1.7">Click any node on the canvas to inspect its real-time metrics.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Current Challenge</div>
+      <div id="level-challenge" style="color:var(--text2);font-size:12px;line-height:1.6">Start the game to receive your first incident brief.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Active Incidents</div>
+      <div id="active-failures-panel" style="font-size:11px;color:var(--text3)">No active incidents.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;flex:1">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Achievements</div>
+      <div id="achievements-panel" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+    </div>
   </div>
 </div>
-<div class="game-log" id="game-log"></div>
-
-<div class="grid-3" style="margin-top:16px">
-  <div class="card"><div class="card-title" style="font-size:14px">Scoring</div><div style="font-size:12px;color:var(--text2);line-height:1.7">+1 per second alive<br>+10 per 1000 requests handled<br>-50 for each server crash<br>Bonus for high availability</div></div>
-  <div class="card"><div class="card-title" style="font-size:14px">Events</div><div style="font-size:12px;color:var(--text2);line-height:1.7">🔴 Server crash — reroutes traffic<br>⚡ Cache failure — DB load spikes<br>🌊 Traffic spike — 3× normal load<br>🔀 Network partition — split cluster</div></div>
-  <div class="card"><div class="card-title" style="font-size:14px">Win Condition</div><div style="font-size:12px;color:var(--text2);line-height:1.7">Survive 3 minutes with >95% availability. Latency must stay below 500ms. Achieve 10,000 score to win!</div></div>
+<div class="grid-3" style="margin-top:14px">
+  <div class="card"><div class="card-title" style="font-size:14px">Scoring</div><div style="font-size:12px;color:var(--text2);line-height:1.9">+5 pts / second alive<br>+50 per 1K requests<br>+200 per level cleared<br>&#8722;100 per node offline</div></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Failure Events</div><div style="font-size:12px;color:var(--text2);line-height:1.9">&#128165; Server crash &#183; &#128452; DB failure<br>&#128293; CPU spike &#183; &#128184; Cache eviction<br>&#9889; DDoS attack &#183; &#129430; Thundering herd<br>&#128256; Network partition</div></div>
+  <div class="card"><div class="card-title" style="font-size:14px">Win Condition</div><div style="font-size:12px;color:var(--text2);line-height:1.9">Survive all 10 levels with &gt;20% availability. Aim for &#9733;&#9733;&#9733; per level.</div></div>
 </div>
 </div>
 
@@ -2664,7 +2686,8 @@ span.<span class="fn">setAttribute</span>(<span class="str">'order.id'</span>, o
     by <strong>Sumit</strong>
   </a>
 </footer>
-<script>const _SDL_AUTHOR=atob("U3VtaXQgU3VtYW4="),_SDL_PROJECT=atob("U3lzdGVtIERlc2lnbiBMYWI="),_SDL_YEAR=2026,_SDL_SIG="d7fbf6c8c4a27978bd7c883edbf040fb",_SDL_MD5="3076222f3634da5fa41c0e8ded42a83e";
+<script>(function(){var _0xSDLW='\n%c  System Design Lab  \n%c  \u00a9 2026 Sumit Suman  |  linkedin.com/in/thesumitsuman/  \n%c  Signature: SDL_d7fbf6c8c4a27978bd7c883e  \n';var _0xSDLS='background:#00e5ff;color:#060913;font-size:13px;font-weight:900;padding:6px 20px;border-radius:4px 4px 0 0';var _0xSDLM='background:#0c1120;color:#00e5ff;font-size:11px;padding:4px 20px';var _0xSDLL='background:#0c1120;color:#546e7a;font-size:10px;padding:4px 20px;border-radius:0 0 4px 4px';console.log(_0xSDLW,_0xSDLS,_0xSDLM,_0xSDLL);console.log('%cWarning: This source code is copyright protected. Unauthorized copying or redistribution is strictly prohibited.','color:#ff4757;font-weight:700;font-size:12px');})();
+const _SDL_AUTHOR=atob("U3VtaXQgU3VtYW4="),_SDL_PROJECT=atob("U3lzdGVtIERlc2lnbiBMYWI="),_SDL_YEAR=2026,_SDL_SIG="d7fbf6c8c4a27978bd7c883edbf040fb",_SDL_MD5="3076222f3634da5fa41c0e8ded42a83e";
 try{Object.defineProperty(window,"_sdlAuthor",{get:()=>_SDL_AUTHOR,configurable:false,enumerable:false});}catch(e){}
 (function(){
 document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
@@ -4480,220 +4503,122 @@ lines.forEach((l,i)=>ctx.fillText(l,x,y-4+(i-lines.length/2+.5)*15));
 });
 }
 
-let game={
-canvas:null,ctx:null,animFrame:null,running:false,
-servers:[],dbNodes:[],cacheNodes:[],queueNodes:[],cdnNodes:[],
-requests:[],packets:[],score:0,budget:1000,
-availability:100,latency:12,baseLoad:10,currentLoad:10,
-time:0,events:[],gameOver:false,won:false,
-loadInterval:null
+let game={canvas:null,ctx:null,animFrame:null,running:false,nodes:[],edges:[],packets:[],particles:[],score:0,budget:1000,availability:100,latency:12,time:0,level:1,maxLevel:10,rps:0,totalRequests:0,gameOver:false,won:false,selectedNode:null,hoverNode:null,dragging:null,dragOffset:{x:0,y:0},loadInterval:null,eventInterval:null,difficulty:'normal',achievements:new Set(),levelTimer:0,activeFailures:{},mitigations:new Set(),shakeIntensity:0,spawnAccum:0,levelComplete:false,nodeIdCounter:0,slaBreachTimer:0,noNodeDied:true,showTooltip:null};
+
+const _0xg5l=[
+{num:1,name:'Boot Sequence',dur:50,challenge:'Light traffic, no failures. Learn to add nodes and watch packets flow.',company:'Every production system started exactly here.',sm:0.3,fc:0},
+{num:2,name:'First Blood',dur:60,challenge:'Slow DB queries emerging. Deploy Redis Cache to protect your database.',company:'Twitter 2008: DB overload forced emergency caching to survive.',sm:0.5,fc:0.3},
+{num:3,name:'Traffic Spike',dur:65,challenge:'3x normal load incoming. Scale your API fleet before queues overflow.',company:'Product Hunt launches cause instant 3x spikes within seconds.',sm:1.0,fc:0.4},
+{num:4,name:'Server Down',dur:70,challenge:'An API server will crash. Ensure traffic auto-reroutes to healthy nodes.',company:'AWS EC2 hardware failures happen roughly monthly per large fleet.',sm:0.8,fc:0.6},
+{num:5,name:'Cache Storm',dur:75,challenge:'Cache eviction + DB pressure simultaneously. Add fallback layers.',company:'Reddit 2014: memcached failure cascaded into total DB storm.',sm:1.2,fc:0.7},
+{num:6,name:'Split Brain',dur:80,challenge:'Network partition splits your cluster in two. CAP theorem in action.',company:'MongoDB 2019: network partition caused split-brain and data loss.',sm:1.0,fc:0.8},
+{num:7,name:'Under Siege',dur:90,challenge:'DDoS overwhelms CDN and LB. Rate limiting at edge is now critical.',company:'GitHub 2018: 1.35 Tbps DDoS -- largest recorded attack at the time.',sm:3.0,fc:0.9},
+{num:8,name:'DB Roulette',dur:90,challenge:'Primary DB will fail. Failover to replica must complete in <30 seconds.',company:'Slack 2019: MySQL primary failure caused a 3-hour production outage.',sm:1.5,fc:1.0},
+{num:9,name:'Cascade',dur:100,challenge:'3 sequential failures in 60s. Circuit breakers prevent the death spiral.',company:'AWS us-east-1 2021: cascading failure affected 24 downstream services.',sm:1.8,fc:1.0},
+{num:10,name:'Black Friday',dur:120,challenge:'ALL failure types simultaneously. Maintain 99.9% for 90 seconds to win.',company:'Amazon Black Friday: 4M req/sec, zero tolerance for any downtime.',sm:2.5,fc:1.0}
+];
+
+const _0xg5f={
+server_crash:{name:'Server Crash',icon:'X',diff:'**',col:'#ff4757',dmg:55,types:['api'],msg:'A server process crashed.',fix:'addServer',concept:'Circuit Breaker stops the cascade when a node dies.'},
+db_failure:{name:'DB Primary Failure',icon:'!',diff:'***',col:'#ff4757',dmg:75,types:['db'],msg:'Primary database unresponsive.',fix:'addReplica',concept:'Replication enables automatic failover to a healthy replica.'},
+high_latency:{name:'High Latency Spike',icon:'~',diff:'*',col:'#ffa500',dmg:18,types:['api','lb'],msg:'Network congestion causing requests to queue.',fix:'addCache',concept:'Caching serves reads from memory, cutting latency dramatically.'},
+cache_eviction:{name:'Cache Eviction Storm',icon:'$',diff:'**',col:'#ffa500',dmg:28,types:['cache'],msg:'Cache memory full -- LRU evicting hot keys.',fix:'addCache',concept:'Cache TTL tuning prevents eviction storms.'},
+cpu_spike:{name:'CPU Spike',icon:'F',diff:'**',col:'#ffa500',dmg:35,types:['api'],msg:'CPU at 100% -- inefficient query detected.',fix:'addServer',concept:'Horizontal scaling distributes CPU load across the fleet.'},
+ddos_attack:{name:'DDoS Attack',icon:'Z',diff:'****',col:'#ff4757',dmg:12,types:['cdn','lb'],msg:'Thousands of malicious requests flooding entry points.',fix:'rateLimiter',concept:'Rate limiting at the edge blocks floods before they reach backend.'},
+network_partition:{name:'Network Partition',icon:'P',diff:'***',col:'#a855f7',dmg:45,types:['db'],msg:'Network split -- nodes cannot communicate.',fix:'addReplica',concept:'CAP theorem: choose CP or AP during partition.'},
+memory_leak:{name:'Memory Leak',icon:'M',diff:'**',col:'#ffa500',dmg:22,types:['api'],msg:'Slow memory leak. OOM crash incoming.',fix:'circuitBreaker',concept:'Canary deployments detect leaks before full fleet.'},
+thundering_herd:{name:'Thundering Herd',icon:'H',diff:'***',col:'#ff4757',dmg:42,types:['db'],msg:'Cache expired -- all servers simultaneously hammering DB.',fix:'addCache',concept:'Cache stampede prevention: jitter + mutex lock on refill.'},
+disk_full:{name:'Disk Full',icon:'D',diff:'**',col:'#ffa500',dmg:30,types:['db'],msg:'Database disk 100% full -- writes failing.',fix:'addReplica',concept:'Data archival + tiered storage prevents disk exhaustion.'}
 };
 
-function initGame(){
-const canvas=document.getElementById('game-canvas');
-if(!canvas) return;
-if(game.animFrame) cancelAnimationFrame(game.animFrame);
-game.canvas=canvas; game.ctx=canvas.getContext('2d');
-canvas.width=canvas.offsetWidth; canvas.height=520;
-document.getElementById('game-overlay').style.display='flex';
-}
+const _0xg5a={
+addServer:{cost:50,label:'+ API Server',concept:'Horizontal Scaling -- stateless compute. Netflix runs 100K+ EC2 instances.'},
+addCache:{cost:40,label:'+ Redis Cache',concept:'Cache-Aside Pattern -- 90% read hit rate. Twitter uses Redis for timelines.'},
+addQueue:{cost:45,label:'+ Kafka Queue',concept:'Message Queue -- decouples write pressure. LinkedIn Kafka: 7 trillion messages/day.'},
+addReplica:{cost:60,label:'+ DB Replica',concept:'Replication -- async copy enables <30s failover. Production DBs run 3+ replicas.'},
+addCDN:{cost:30,label:'+ CDN Node',concept:'CDN -- edge caching: 200ms to 5ms. Netflix serves 95% of traffic from CDN.'},
+circuitBreaker:{cost:20,label:'Circuit Breaker',concept:'Circuit Breaker -- fails fast when downstream unhealthy. Hystrix stops cascades.'},
+rateLimiter:{cost:25,label:'Rate Limiter',concept:'Rate Limiting -- throttles req/IP at edge. Twitter limits 300 tweets/3h.'}
+};
 
-function gameStart(){
-if(!game.canvas) initGame();
-document.getElementById('game-overlay').style.display='none';
-clearInterval(game.loadInterval);
+function _0xg5d(d,b){game.difficulty=d;document.querySelectorAll('#diff-btns button').forEach(i=>{i.style.border='1px solid var(--border2)';i.style.background='var(--glass)';});const m={easy:'var(--green)',normal:'var(--cyan)',hard:'var(--red)',chaos:'var(--purple)'};b.style.border='2px solid '+m[d];b.style.background=m[d].replace('var(--','rgba(').replace(')',',0.08)');}
+function _0xg5c(n){if(!n.online||!n.built)return'#3a3a4a';const h=n.hp/n.maxHp;if(h>0.7)return({cdn:'#00b4d8',dns:'#00e5ff',lb:'#a855f7',api:'#00ff88',cache:'#ff4757',db:'#ffa500',queue:'#ffa500',monitor:'#ec4899'})[n.type]||'#9ca3af';return h>0.4?'#ffa500':'#ff4757';}
+function _0xg5n(x,y){for(let i=game.nodes.length-1;i>=0;i--){const n=game.nodes[i];if(!n.built)continue;const d=(x-n.x)*(x-n.x)+(y-n.y)*(y-n.y);if(d<=(n.r+8)*(n.r+8))return n;}return null;}
+function _0xg5p(e){const r=game.canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*(game.canvas.width/r.width),y:(e.clientY-r.top)*(game.canvas.height/r.height)};}
+function _0xg5q(x,y,co,n=16,sp=4){for(let i=0;i<n;i++){const a=(Math.PI*2/n)*i+Math.random()*0.4;const s=sp*(0.5+Math.random());game.particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,color:co,sz:2+Math.random()*3,life:30+Math.random()*25,maxLife:55});}}
+function _0xg5r(si){const v=new Set([si]),pa=[si];let cu=si;for(let h=0;h<10;h++){const ca=game.edges.filter(e=>{if(e.from!==cu)return false;const t=game.nodes.find(n=>n.id===e.to);return t&&t.built&&t.online&&!v.has(e.to);});if(!ca.length)break;const pk=ca[Math.floor(Math.random()*ca.length)];const tg=game.nodes.find(n=>n.id===pk.to);pa.push(pk.to);v.add(pk.to);cu=pk.to;if(tg&&tg.type==='db')break;}return pa;}
 
-const W=game.canvas.width,H=game.canvas.height;
-game.servers=[{x:W/2-100,y:H/2-60,label:'API 1',load:0,alive:true,color:'#00e5ff'},
-{x:W/2+100,y:H/2-60,label:'API 2',load:0,alive:true,color:'#00e5ff'}];
-game.dbNodes=[{x:W/2,y:H*0.8,label:'DB',load:0,alive:true,color:'#00ff88'}];
-game.cacheNodes=[]; game.queueNodes=[]; game.cdnNodes=[];
-game.requests=[]; game.packets=[]; game.score=0; game.budget=1000;
-game.availability=100; game.latency=12; game.baseLoad=10; game.currentLoad=10;
-game.time=0; game.events=[]; game.gameOver=false; game.won=false;
-game.running=true;
-gameLog('System online. Traffic starting...','ok');
-updateGameHUD();
+function initGame(){const c=document.getElementById('game-canvas');if(!c)return;game.canvas=c;const W=c.parentElement.clientWidth||900;const H=Math.round(W*0.58);c.width=W;c.height=H;document.getElementById('game-overlay').style.display='flex';}
 
-game.loadInterval=setInterval(()=>{
-if(!game.running) return;
-game.currentLoad=Math.min(100, game.currentLoad+3);
-game.score+=1;
-game.time++;
+function _0xg5s(W,H){const xi=()=>game.nodeIdCounter++;return[
+{id:xi(),type:'cdn',x:W*.10,y:H*.10,label:'CDN',hp:120,maxHp:120,load:0,online:true,built:true,r:25,layer:1},
+{id:xi(),type:'dns',x:W*.30,y:H*.10,label:'DNS',hp:150,maxHp:150,load:0,online:true,built:true,r:22,layer:1},
+{id:xi(),type:'lb',x:W*.50,y:H*.22,label:'Load\nBalancer',hp:100,maxHp:100,load:0,online:true,built:true,r:27,layer:2},
+{id:xi(),type:'api',x:W*.20,y:H*.43,label:'API-1',hp:80,maxHp:80,load:0,online:true,built:true,r:23,layer:3,apiIdx:0},
+{id:xi(),type:'api',x:W*.50,y:H*.43,label:'API-2',hp:80,maxHp:80,load:0,online:true,built:true,r:23,layer:3,apiIdx:1},
+{id:xi(),type:'api',x:W*.80,y:H*.43,label:'API-3',hp:80,maxHp:80,load:0,online:true,built:true,r:23,layer:3,apiIdx:2},
+{id:xi(),type:'cache',x:W*.32,y:H*.63,label:'Redis\nCache',hp:70,maxHp:70,load:0,online:true,built:false,r:21,layer:4},
+{id:xi(),type:'db',x:W*.50,y:H*.80,label:'DB\nPrimary',hp:100,maxHp:100,load:0,online:true,built:true,r:27,layer:5,isPrimary:true},
+{id:xi(),type:'db',x:W*.74,y:H*.80,label:'DB\nReplica',hp:100,maxHp:100,load:0,online:true,built:false,r:21,layer:5,isPrimary:false},
+{id:xi(),type:'queue',x:W*.88,y:H*.55,label:'Kafka',hp:90,maxHp:90,load:0,online:true,built:false,r:21,layer:6},
+{id:xi(),type:'monitor',x:W*.88,y:H*.28,label:'Monitor',hp:150,maxHp:150,load:0,online:true,built:true,r:19,layer:6}
+];}
 
-if(game.time%15===0) triggerGameEvent();
-if(game.score>=10000&&!game.won){ game.won=true; endGame(true); }
-updateGameHUD();
-},1000);
-gameLoop();
-}
+function _0xg5t(no){const bt=t=>no.filter(n=>n.type===t);const id=t=>bt(t)[0]?.id;const ed=[];ed.push({from:id('cdn'),to:id('lb'),w:2});ed.push({from:id('dns'),to:id('lb'),w:2});bt('api').forEach(a=>ed.push({from:id('lb'),to:a.id,w:2}));bt('api').forEach(a=>ed.push({from:a.id,to:id('cache'),w:1,optional:true}));bt('api').forEach(a=>ed.push({from:a.id,to:no.find(n=>n.type==='db'&&n.isPrimary)?.id,w:2}));const dp=no.find(n=>n.type==='db'&&n.isPrimary);const dr=no.find(n=>n.type==='db'&&!n.isPrimary);if(dp&&dr)ed.push({from:dp.id,to:dr.id,w:1,optional:true});bt('api').forEach(a=>ed.push({from:a.id,to:id('queue'),w:1,optional:true}));bt('api').forEach(a=>ed.push({from:id('monitor'),to:a.id,w:0,dashed:true}));ed.push({from:id('monitor'),to:no.find(n=>n.type==='db'&&n.isPrimary)?.id,w:0,dashed:true});return ed.filter(e=>e.from!=null&&e.to!=null);}
 
-function triggerGameEvent(){
-const events=['server_crash','cache_fail','traffic_spike','db_slow'];
-const evt=events[Math.floor(Math.random()*events.length)];
-if(evt==='server_crash'){
-const alive=game.servers.filter(s=>s.alive);
-if(alive.length>0){
-const victim=alive[Math.floor(Math.random()*alive.length)];
-victim.alive=false; victim.color='#ff4757';
-game.availability=Math.max(0,game.availability-15);
-gameLog(`💥 ${victim.label} crashed! Traffic rerouted.`,'err');
-}
-} else if(evt==='cache_fail'){
-if(game.cacheNodes.length>0){
-game.cacheNodes[0].alive=false;
-game.latency=Math.min(500,game.latency*2);
-gameLog('⚡ Cache node failed! DB load spiking.','warn');
-} else { gameLog('⚠ No cache — DB taking full load!','warn'); game.latency+=20; }
-} else if(evt==='traffic_spike'){
-game.currentLoad=Math.min(100,game.currentLoad+20);
-gameLog('🌊 Traffic spike! 3× normal load for 30s.','warn');
-setTimeout(()=>{game.currentLoad=Math.max(10,game.currentLoad-15);},30000);
-} else if(evt==='db_slow'){
-if(game.dbNodes.length>0){ game.dbNodes[0].load=90; gameLog('🗄 DB overloaded! Add replicas or cache.','warn'); }
-}
+function gameStart(){const c=document.getElementById('game-canvas');if(!c)return;if(game.animFrame)cancelAnimationFrame(game.animFrame);clearInterval(game.loadInterval);clearInterval(game.eventInterval);game.canvas=c;game.ctx=c.getContext('2d');const W=c.parentElement.clientWidth||900;const H=Math.round(W*0.58);c.width=W;c.height=H;const bd={easy:2000,normal:1000,hard:500,chaos:200};Object.assign(game,{running:true,gameOver:false,won:false,score:0,budget:bd[game.difficulty]||1000,availability:100,latency:12,time:0,level:1,levelTimer:0,rps:0,totalRequests:0,selectedNode:null,hoverNode:null,dragging:null,activeFailures:{},mitigations:new Set(),shakeIntensity:0,spawnAccum:0,levelComplete:false,noNodeDied:true,slaBreachTimer:0,nodeIdCounter:0,achievements:new Set(),packets:[],particles:[]});game.nodes=_0xg5s(W,H);game.edges=_0xg5t(game.nodes);document.getElementById('game-overlay').style.display='none';document.getElementById('game-log').innerHTML='';c.onmousedown=e=>{const p=_0xg5p(e);const n=_0xg5n(p.x,p.y);game.selectedNode=n?n.id:null;if(n){game.dragging=n;game.dragOffset={x:p.x-n.x,y:p.y-n.y};_0xg5J(n);}else _0xg5J(null);};c.onmousemove=e=>{const p=_0xg5p(e);if(game.dragging){game.dragging.x=p.x-game.dragOffset.x;game.dragging.y=p.y-game.dragOffset.y;return;}const n=_0xg5n(p.x,p.y);game.hoverNode=n?n.id:null;const tt=document.getElementById('game-node-tooltip');if(n&&tt){const pc=Math.round(n.hp/n.maxHp*100);const aw={cdn:'CloudFront',dns:'Route 53',lb:'ALB/NLB',api:'EC2 t3.medium',cache:'ElastiCache',db:'RDS PostgreSQL',queue:'MSK Kafka',monitor:'CloudWatch'};tt.style.display='block';tt.style.left=Math.min(n.x+n.r+12,W-230)+'px';tt.style.top=Math.max(n.y-40,4)+'px';const hc=pc>60?'#00ff88':pc>30?'#ffa500':'#ff4757';const lc=n.load>80?'#ff4757':n.load>50?'#ffa500':'#00ff88';tt.innerHTML='<strong style="color:'+_0xg5c(n)+'">'+n.label.replace('\n',' ')+'</strong><br>HP: <span style="color:'+hc+'">'+pc+'%</span> | Load: <span style="color:'+lc+'">'+Math.round(n.load)+'%</span><br><span style="font-size:10px;color:var(--text3)">AWS: '+aw[n.type]+'</span>';}else if(tt)tt.style.display='none';};c.onmouseup=()=>{game.dragging=null;};c.onmouseleave=()=>{game.hoverNode=null;const tt=document.getElementById('game-node-tooltip');if(tt)tt.style.display='none';};_0xg5K();updateGameHUD();gameLog('Level 1: '+_0xg5l[0].name+' -- '+_0xg5l[0].challenge,'ok');gameLog('System online. Watch packets flow.','');game.loadInterval=setInterval(_0xg5u,1000);game.eventInterval=setInterval(triggerGameEvent,3500);gameLoop();}
 
-const aliveServers=game.servers.filter(s=>s.alive).length;
-if(aliveServers===0){ game.availability=0; endGame(false); return; }
-const load=game.currentLoad;
-const capacity=aliveServers*30 + game.cacheNodes.filter(c=>c.alive).length*20 + game.queueNodes.length*10;
-if(load>capacity){ game.availability=Math.max(0,game.availability-10); game.latency=Math.min(500,game.latency+30); }
-if(game.availability<20 && game.cacheNodes.length===0 && game.queueNodes.length===0){ endGame(false); }
-}
+function _0xg5u(){if(!game.running||game.gameOver)return;game.time++;game.levelTimer++;const lv=_0xg5l[game.level-1];game.score+=5;const ap=game.nodes.filter(n=>n.type==='api'&&n.built&&n.online);const co=game.nodes.some(n=>n.type==='cache'&&n.built&&n.online);game.rps=Math.round(ap.length*75*lv.sm*(co?1.35:1));game.totalRequests+=game.rps;game.score+=Math.floor(game.rps/1000)*50/60;const db=game.nodes.find(n=>n.type==='db'&&n.isPrimary&&n.online&&n.built);const dl=db?db.load:80;game.latency=Math.round(8+dl*1.8+(co?0:22)+(game.activeFailures.high_latency?240:0)+(game.activeFailures.thundering_herd?150:0));const bl=game.nodes.filter(n=>n.built);const ol=bl.filter(n=>n.online);game.availability=Math.round(ol.length/Math.max(bl.length,1)*100);if(game.latency>500){game.slaBreachTimer++;if(game.slaBreachTimer>10){game.score=Math.max(0,game.score-50);gameLog('SLA breach: P99 >500ms. Score penalty.','warn');game.slaBreachTimer=0;}}else game.slaBreachTimer=0;game.nodes.forEach(n=>{if(!n.built||!n.online)return;n.hp=Math.min(n.maxHp,n.hp+(n.type==='monitor'?1:0.4));n.load=Math.max(0,n.load-4);});if(game.activeFailures.thundering_herd&&db){db.load=Math.min(100,db.load+8);db.hp=Math.max(0,db.hp-(co?0.5:2));if(db.hp<=0){db.online=false;game.noNodeDied=false;}}if(game.activeFailures.memory_leak){game.nodes.filter(n=>n.type==='api'&&n.built&&n.online).forEach(n=>{n.hp=Math.max(0,n.hp-1.5);if(n.hp<=0)n.online=false;});}const da=game.nodes.some(n=>n.type==='db'&&n.built&&n.online);if(!da){game.nodes.filter(n=>n.type==='api'&&n.built&&n.online).forEach(n=>{n.hp=Math.max(0,n.hp-3);});}if(game.levelTimer>=lv.dur&&!game.levelComplete)_0xg5v();const ca=game.nodes.filter(n=>n.built&&n.online).length;if(ca<2||game.availability<10){endGame(false);return;}_0xg5M();updateGameHUD();_0xg5L();}
 
-function gameAction(action){
-if(!game.running) return;
-const costs={addServer:50,addCache:30,addQueue:40,addReplica:60,addCDN:20};
-const cost=costs[action]||0;
-if(game.budget<cost){ gameLog('Insufficient budget!','err'); return; }
-game.budget-=cost;
-const W=game.canvas.width, H=game.canvas.height;
-if(action==='addServer'){
-const n=game.servers.length+1;
-game.servers.push({x:W*0.2+n*90,y:H/2-60,label:`API ${n+1}`,load:0,alive:true,color:'#00e5ff'});
-game.availability=Math.min(100,game.availability+10); gameLog('+ API Server added. Capacity increased.','ok');
-} else if(action==='addCache'){
-game.cacheNodes.push({x:W*0.7,y:H*0.35,label:'Redis',alive:true,color:'#ff4757'});
-game.latency=Math.max(5,game.latency/2); gameLog('+ Redis Cache added. Latency halved!','ok');
-} else if(action==='addQueue'){
-game.queueNodes.push({x:W*0.15,y:H*0.65,label:'Kafka',alive:true,color:'#ffa500'});
-game.availability=Math.min(100,game.availability+8); gameLog('+ Message Queue added. Async decoupling enabled.','ok');
-} else if(action==='addReplica'){
-game.dbNodes.push({x:W*0.7,y:H*0.8,label:'DB Replica',load:0,alive:true,color:'#00ff88'});
-game.availability=Math.min(100,game.availability+12); gameLog('+ DB Replica added. Read capacity doubled.','ok');
-} else if(action==='addCDN'){
-game.cdnNodes.push({x:W*0.85,y:H*0.2,label:'CDN',alive:true,color:'#00b4d8'});
-game.latency=Math.max(5,game.latency-8); gameLog('+ CDN added. Static asset load reduced.','ok');
-}
-updateGameHUD();
-}
+function _0xg5v(){game.levelComplete=true;const lv=_0xg5l[game.level-1];game.score+=200;if(game.availability>99.5)game.score+=100;if(game.noNodeDied)game.score+=75;gameLog('Level '+game.level+' cleared! +200pts -- Availability: '+game.availability+'%','ok');for(let i=0;i<40;i++)_0xg5q(game.canvas.width*Math.random(),game.canvas.height*Math.random(),'#00ff88',1,3);setTimeout(()=>{if(!game.running)return;if(game.level>=game.maxLevel){endGame(true);return;}game.level++;game.levelTimer=0;game.levelComplete=false;game.noNodeDied=true;game.activeFailures={};game.nodes.forEach(n=>{if(n.built&&n.online)n.hp=n.maxHp;});_0xg5K();const nl=_0xg5l[game.level-1];gameLog('Level '+game.level+': '+nl.name,'ok');gameLog(nl.challenge,'');updateGameHUD();},2200);}
 
-function endGame(won){
-game.running=false; game.gameOver=true;
-clearInterval(game.loadInterval);
-const overlay=document.getElementById('game-overlay');
-overlay.style.display='flex';
-overlay.innerHTML=`<div style="text-align:center">
-<h2 style="color:${won?'#00ff88':'#ff4757'};font-family:var(--font-display)">${won?'🏆 System Survived!':'💥 System Overloaded!'}</h2>
-<p style="color:var(--text2);margin:12px 0 8px">${won?'Excellent! You maintained 99.9% availability!':'Your system couldn\'t handle the load.'}</p>
-<div style="font-family:var(--font-code);font-size:28px;color:var(--cyan);margin:16px 0">${game.score.toLocaleString()} pts</div>
-<div style="display:flex;gap:16px;justify-content:center;margin-bottom:20px">
-<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--green)">${game.availability.toFixed(0)}%</div><div style="font-size:11px;color:var(--text3)">Availability</div></div>
-<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--amber)">${game.latency}ms</div><div style="font-size:11px;color:var(--text3)">P99 Latency</div></div>
-<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--purple)">$${1000-game.budget}</div><div style="font-size:11px;color:var(--text3)">Spent</div></div>
-</div>
-<button class="btn btn-primary" onclick="gameStart()">▶ Play Again</button>
-</div>`;
-}
+function triggerGameEvent(){if(!game.running||game.gameOver||game.levelComplete)return;const lv=_0xg5l[game.level-1];if(Math.random()>lv.fc)return;const df={easy:0.5,normal:1,hard:1.5,chaos:2.2}[game.difficulty]||1;let pl=[];if(game.level>=2)pl.push('high_latency','high_latency','cache_eviction','cpu_spike');if(game.level>=3)pl.push('cpu_spike','server_crash','memory_leak');if(game.level>=4)pl.push('server_crash','server_crash','server_crash');if(game.level>=5)pl.push('thundering_herd','cache_eviction','disk_full');if(game.level>=6)pl.push('network_partition','memory_leak');if(game.level>=7)pl.push('ddos_attack','ddos_attack','ddos_attack');if(game.level>=8)pl.push('db_failure','db_failure');if(game.level>=9)pl.push('server_crash','db_failure','network_partition','thundering_herd');if(game.level>=10)pl=Object.keys(_0xg5f);if(!pl.length)pl=['high_latency'];const ty=pl[Math.floor(Math.random()*pl.length)];_0xg5w(ty,df);}
 
-function updateGameHUD(){
-const el=id=>document.getElementById(id);
-if(el('g-score')) el('g-score').textContent=game.score.toLocaleString();
-if(el('g-avail')){
-el('g-avail').textContent=game.availability.toFixed(0)+'%';
-el('g-avail').style.color=game.availability>95?'#00ff88':game.availability>80?'#ffa500':'#ff4757';
-}
-if(el('g-latency')){
-el('g-latency').textContent=game.latency+'ms';
-el('g-latency').style.color=game.latency<50?'#00ff88':game.latency<200?'#ffa500':'#ff4757';
-}
-if(el('g-budget')) el('g-budget').textContent='$'+game.budget;
-}
+function _0xg5w(ty,dm=1){const ev=_0xg5f[ty];if(!ev)return;let ha=false;ev.types.forEach(tt=>{const cd=game.nodes.filter(n=>n.type===tt&&n.built&&n.online);if(!cd.length)return;const tg=cd[Math.floor(Math.random()*cd.length)];const dg=Math.round(ev.dmg*dm);tg.hp=Math.max(0,tg.hp-dg);tg.load=Math.min(100,tg.load+45);_0xg5q(tg.x,tg.y,ev.col,14,4);ha=true;if(tg.hp<=0){tg.online=false;game.noNodeDied=false;game.score=Math.max(0,game.score-100);game.shakeIntensity=9;gameLog(ev.icon+' '+tg.label.replace('\n',' ')+' went OFFLINE! '+ev.msg,'err');gameLog('  Fix: '+ev.concept,'warn');}else{gameLog(ev.icon+' '+ev.name+': '+tg.label.replace('\n',' ')+' taking damage ('+Math.round(tg.hp)+'/'+tg.maxHp+' HP)','warn');}});if(!ha)return;game.activeFailures[ty]=(game.activeFailures[ty]||0)+1;game.showTooltip={lines:[ev.icon+' '+ev.name+'  '+ev.diff,ev.msg,'Fix: '+((_0xg5a[ev.fix]?.label)||ev.fix)+' -- '+ev.concept.slice(0,55)+'...'],timer:220,color:ev.col};setTimeout(()=>{if(game.activeFailures[ty]>0){game.activeFailures[ty]--;if(game.activeFailures[ty]<=0)delete game.activeFailures[ty];}},ty==='ddos_attack'?7000:13000);if(ty==='db_failure'){const dp=game.nodes.find(n=>n.type==='db'&&n.isPrimary&&!n.online);const hr=game.nodes.some(n=>n.type==='db'&&!n.isPrimary&&n.built&&n.online);if(dp&&!hr){setTimeout(()=>{gameLog('Cascading failure: DB down with no replica!','err');game.shakeIntensity=12;},5000);}}}
 
-function gameLoop(){
-if(!game.running&&!game.gameOver) return;
-game.animFrame=requestAnimationFrame(gameLoop);
-const {ctx,canvas,servers,dbNodes,cacheNodes,queueNodes,cdnNodes} = game;
-const W=canvas.width,H=canvas.height;
-ctx.clearRect(0,0,W,H);
-ctx.fillStyle='#0a0f1e'; ctx.fillRect(0,0,W,H);
+function gameAction(ac){if(!game.running||game.gameOver)return;const df=_0xg5a[ac];if(!df)return;if(game.budget<df.cost){gameLog('Insufficient budget for '+df.label+' (need $'+df.cost+', have $'+game.budget+')','warn');return;}const W=game.canvas.width,H=game.canvas.height;game.budget-=df.cost;let ok=false;if(ac==='addServer'){const ex=game.nodes.filter(n=>n.type==='api'&&n.built);const ct=ex.length;const ni=game.nodeIdCounter++;const xp=Math.min(W*(0.10+ct*0.16),W*0.88);const nn={id:ni,type:'api',x:xp,y:H*0.43,label:'API-'+(ct+1),hp:80,maxHp:80,load:0,online:true,built:true,r:23,layer:3,apiIdx:ct};game.nodes.push(nn);const lb=game.nodes.find(n=>n.type==='lb');const dp=game.nodes.find(n=>n.type==='db'&&n.isPrimary);if(lb)game.edges.push({from:lb.id,to:ni,w:2});if(dp)game.edges.push({from:ni,to:dp.id,w:2});const ca=game.nodes.find(n=>n.type==='cache'&&n.built);if(ca)game.edges.push({from:ni,to:ca.id,w:1,optional:true});_0xg5q(nn.x,nn.y,'#00ff88',20,5);ex.filter(n=>n.online).forEach(n=>{n.hp=Math.min(n.maxHp,n.hp+18);n.load=Math.max(0,n.load-20);});if(ct+1>=5)_0xg5N('scale_master','Scale Master','Ran 5+ API servers simultaneously');ok=true;}else if(ac==='addCache'){let cn=game.nodes.find(n=>n.type==='cache'&&!n.built);if(cn){cn.built=true;cn.online=true;cn.hp=cn.maxHp;game.nodes.filter(n=>n.type==='api'&&n.built).forEach(a=>{if(!game.edges.find(e=>e.from===a.id&&e.to===cn.id))game.edges.push({from:a.id,to:cn.id,w:1,optional:true});});ok=true;}else{cn=game.nodes.find(n=>n.type==='cache'&&n.built);const ni=game.nodeIdCounter++;const nc={id:ni,type:'cache',x:(cn?.x||W*0.32)+90,y:cn?.y||H*0.63,label:'Redis\nReplica',hp:70,maxHp:70,load:0,online:true,built:true,r:19,layer:4};game.nodes.push(nc);ok=true;}delete game.activeFailures.cache_eviction;delete game.activeFailures.thundering_herd;game.nodes.filter(n=>n.type==='cache'&&n.built).forEach(n=>{n.hp=n.maxHp;n.online=true;n.load=Math.max(0,n.load-30);});game.nodes.filter(n=>n.type==='db'&&n.built).forEach(n=>{n.load=Math.max(0,n.load-25);});_0xg5N('cache_whisperer','Cache Whisperer','Deployed Redis to absorb DB pressure');_0xg5q(game.nodes.find(n=>n.type==='cache'&&n.built)?.x||W/2,H*0.63,'#ff4757',20,5);}else if(ac==='addQueue'){let qn=game.nodes.find(n=>n.type==='queue');if(qn&&!qn.built){qn.built=true;qn.hp=qn.maxHp;qn.online=true;game.nodes.filter(n=>n.type==='api'&&n.built).forEach(a=>{if(!game.edges.find(e=>e.from===a.id&&e.to===qn.id))game.edges.push({from:a.id,to:qn.id,w:1,optional:true});});}else if(!qn){const ni=game.nodeIdCounter++;qn={id:ni,type:'queue',x:W*.88,y:H*.55,label:'Kafka',hp:90,maxHp:90,load:0,online:true,built:true,r:21,layer:6};game.nodes.push(qn);}_0xg5q(qn.x,qn.y,'#ffa500',18,5);game.mitigations.add('queue');ok=true;}else if(ac==='addReplica'){let rn=game.nodes.find(n=>n.type==='db'&&!n.isPrimary);if(rn&&!rn.built){rn.built=true;rn.online=true;rn.hp=rn.maxHp;const dp=game.nodes.find(n=>n.type==='db'&&n.isPrimary);if(dp&&!game.edges.find(e=>e.from===dp.id&&e.to===rn.id))game.edges.push({from:dp.id,to:rn.id,w:1});ok=true;}else{ok=true;}const dp=game.nodes.find(n=>n.type==='db'&&n.isPrimary&&!n.online);if(dp){const rp=game.nodes.find(n=>n.type==='db'&&!n.isPrimary&&n.built&&n.online);if(rp){rp.isPrimary=true;dp.isPrimary=false;delete game.activeFailures.db_failure;delete game.activeFailures.disk_full;game.shakeIntensity=3;gameLog('Failover complete -- replica promoted to primary!','ok');_0xg5N('failover_hero','Failover Hero','Executed DB failover under live traffic');}}delete game.activeFailures.network_partition;game.nodes.filter(n=>n.type==='db'&&n.built).forEach(n=>{n.hp=Math.min(n.maxHp,n.hp+20);n.load=Math.max(0,n.load-20);});_0xg5q(rn?.x||W*0.74,rn?.y||H*.80,'#ffa500',18,5);}else if(ac==='addCDN'){const cd=game.nodes.find(n=>n.type==='cdn');if(cd){cd.hp=cd.maxHp;cd.online=true;cd.load=Math.max(0,cd.load-40);_0xg5q(cd.x,cd.y,'#00b4d8',18,5);}delete game.activeFailures.ddos_attack;game.nodes.filter(n=>n.type==='lb'&&n.built).forEach(n=>{n.load=Math.max(0,n.load-30);});ok=true;}else if(ac==='circuitBreaker'){game.mitigations.add('circuit_breaker');game.nodes.filter(n=>n.built&&n.online&&n.hp<n.maxHp*0.5).forEach(n=>{n.hp=Math.min(n.maxHp,n.hp+25);});delete game.activeFailures.memory_leak;delete game.activeFailures.server_crash;_0xg5q(W/2,H/2,'#00ff88',30,8);_0xg5N('circuit_opener','Circuit Opener','Deployed circuit breaker to stop cascade');ok=true;}else if(ac==='rateLimiter'){game.mitigations.add('rate_limiter');delete game.activeFailures.ddos_attack;delete game.activeFailures.thundering_herd;game.nodes.filter(n=>(n.type==='cdn'||n.type==='lb')&&n.built).forEach(n=>{n.load=Math.max(0,n.load-45);n.hp=Math.min(n.maxHp,n.hp+20);});_0xg5q(W*0.25,H*0.16,'#ec4899',20,6);_0xg5N('rate_master','Rate Master','Rate limiter neutralized a DDoS attack');ok=true;}if(!ok){game.budget+=df.cost;gameLog(df.label+' already deployed or unavailable','warn');return;}gameLog(df.label+' deployed -- '+df.concept.slice(0,90)+'...','ok');game.showTooltip={lines:[df.label,df.concept],timer:240,color:'#00ff88'};updateGameHUD();_0xg5J(null);}
 
-for(let x=0;x<W;x+=40) for(let y=0;y<H;y+=40){
-ctx.beginPath(); ctx.arc(x,y,1,0,Math.PI*2);
-ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fill();
-}
+function gameLoop(){if(!game.running&&!game.gameOver)return;game.animFrame=requestAnimationFrame(gameLoop);const c=game.canvas,ct=game.ctx;if(!c||!ct)return;const W=c.width,H=c.height,t=Date.now()*0.001;let sx=0,sy=0;if(game.shakeIntensity>0){sx=(Math.random()-.5)*game.shakeIntensity;sy=(Math.random()-.5)*game.shakeIntensity;game.shakeIntensity*=0.88;if(game.shakeIntensity<0.3)game.shakeIntensity=0;}ct.clearRect(0,0,W,H);ct.save();ct.translate(sx,sy);ct.fillStyle='#060913';ct.fillRect(-5,-5,W+10,H+10);_0xg5x(ct,W,H,t);const lv=_0xg5l[game.level-1];game.spawnAccum+=lv.sm*0.06*(game.activeFailures.ddos_attack?5:1);while(game.spawnAccum>=1){_0xg5I();game.spawnAccum--;}_0xg5y(ct,t);_0xg5z(ct);_0xg5A(ct,t,W,H);_0xg5B(ct);if(game.activeFailures.ddos_attack)_0xg5C(ct,W,H,t);if(game.activeFailures.network_partition)_0xg5D(ct,W,H,t);if(game.activeFailures.cpu_spike)_0xg5E(ct,W,H,t);_0xg5F(ct,W,H,t);if(game.showTooltip&&game.showTooltip.timer>0){game.showTooltip.timer--;_0xg5G(ct,game.showTooltip,W,H);}if(game.levelComplete)_0xg5H(ct,W,H,t);ct.restore();}
 
-if(game.running && Math.random()<game.currentLoad/200){
-const target=servers.filter(s=>s.alive)[Math.floor(Math.random()*servers.filter(s=>s.alive).length)];
-if(target){
-game.packets.push({x:-20,y:H*0.1+Math.random()*H*0.3,tx:target.x,ty:target.y,progress:0,speed:0.02+Math.random()*0.02,color:'#00e5ff',target});
-}
-}
+function _0xg5x(ct,W,H,t){const a=0.028+0.008*Math.sin(t*0.4);ct.save();ct.strokeStyle='rgba(0,229,255,'+a+')';ct.lineWidth=0.5;for(let x=0;x<W;x+=48){ct.beginPath();ct.moveTo(x,0);ct.lineTo(x,H);ct.stroke();}for(let y=0;y<H;y+=48){ct.beginPath();ct.moveTo(0,y);ct.lineTo(W,y);ct.stroke();}ct.restore();}
 
-game.packets=game.packets.filter(p=>{
-p.progress+=p.speed;
-if(p.progress>=1){
+function _0xg5y(ct,t){game.edges.forEach(e=>{const fr=game.nodes.find(n=>n.id===e.from);const to=game.nodes.find(n=>n.id===e.to);if(!fr||!to||!fr.built||!to.built)return;const ac=fr.online&&to.online;const ld=(fr.load+to.load)/2;let co,lw;if(!ac){co='rgba(255,71,87,0.2)';lw=1;}else if(ld>80){co='rgba(255,71,87,'+(0.4+0.2*Math.sin(t*6))+')';lw=2.5;}else if(ld>50){co='rgba(255,165,0,0.4)';lw=1.8;}else{co=e.dashed?'rgba(236,72,153,0.18)':'rgba(0,229,255,0.16)';lw=1.2;}ct.save();ct.strokeStyle=co;ct.lineWidth=lw;if(e.dashed||!ac)ct.setLineDash([4,5]);ct.beginPath();ct.moveTo(fr.x,fr.y);ct.lineTo(to.x,to.y);ct.stroke();ct.setLineDash([]);ct.restore();});}
 
-const db=dbNodes.filter(d=>d.alive)[0];
-if(db&&Math.random()>0.5) game.packets.push({x:p.target.x,y:p.target.y,tx:db.x,ty:db.y,progress:0,speed:0.03,color:game.cacheNodes.length?'#ff4757':'#00ff88',target:db});
-if(p.target.alive) p.target.load=Math.min(100,p.target.load+2);
-game.score+=1;
-return false;
-}
-const px=p.x+(p.tx-p.x)*p.progress, py=p.y+(p.ty-p.y)*p.progress;
-ctx.beginPath(); ctx.arc(px,py,4,0,Math.PI*2);
-ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=6; ctx.fill(); ctx.shadowBlur=0;
-return true;
-});
+function _0xg5z(ct){game.packets=game.packets.filter(p=>{p.progress+=p.speed;if(p.progress>=1){p.progress=0;p.pathIdx++;if(p.pathIdx>=p.pathIds.length-1)return false;}const fn=game.nodes.find(n=>n.id===p.pathIds[p.pathIdx]);const tn=game.nodes.find(n=>n.id===p.pathIds[p.pathIdx+1]);if(!fn||!tn||!fn.online||!tn.online)return false;const px=fn.x+(tn.x-fn.x)*p.progress;const py=fn.y+(tn.y-fn.y)*p.progress;ct.save();ct.shadowColor=p.color;ct.shadowBlur=7;ct.beginPath();ct.arc(px,py,p.sz,0,Math.PI*2);ct.fillStyle=p.color;ct.fill();ct.restore();if(tn.built&&tn.online)tn.load=Math.min(100,tn.load+0.08);return true;});}
 
-const allNodes=[...servers,...dbNodes,...cacheNodes,...queueNodes,...cdnNodes];
-allNodes.forEach(n=>{
-if(!n) return;
-const col=n.alive?(n.load>80?'#ff4757':n.color):'rgba(255,71,87,0.4)';
-ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=n.alive?12:0;
-ctx.fillStyle=col+'22'; ctx.strokeStyle=col; ctx.lineWidth=n.alive?2:1;
-ctx.beginPath(); ctx.roundRect(n.x-44,n.y-22,88,44,10); ctx.fill(); ctx.stroke();
-ctx.restore();
-ctx.fillStyle=n.alive?col:'rgba(255,71,87,0.5)';
-ctx.font='bold 12px JetBrains Mono,monospace'; ctx.textAlign='center';
-ctx.fillText(n.label,n.x,n.y+4);
-if(n.load>0&&n.alive){
-ctx.fillStyle=n.load>80?'#ff4757':'rgba(255,255,255,0.4)';
-ctx.font='10px JetBrains Mono,monospace';
-ctx.fillText(Math.round(n.load)+'%',n.x,n.y+38);
-}
+function _0xg5A(ct,t,W,H){game.nodes.forEach(nd=>{if(!nd.built)return;const x=nd.x,y=nd.y,r=nd.r;const co=_0xg5c(nd);const hp=nd.hp/nd.maxHp;const is=game.selectedNode===nd.id;const ih=game.hoverNode===nd.id;if(nd.online){const gs=r*2.2+(is?8:0)+Math.sin(t*2.5+nd.id)*2.5;const gl=ct.createRadialGradient(x,y,0,x,y,gs);gl.addColorStop(0,co+'30');gl.addColorStop(1,'transparent');ct.beginPath();ct.arc(x,y,gs,0,Math.PI*2);ct.fillStyle=gl;ct.fill();}ct.beginPath();ct.arc(x,y,r,0,Math.PI*2);ct.fillStyle=nd.online?'rgba(6,9,19,0.92)':'rgba(22,8,8,0.92)';ct.fill();ct.strokeStyle=nd.online?co:'#553333';ct.lineWidth=is?3:(ih?2.5:1.8);ct.stroke();if(nd.online&&hp<1){ct.beginPath();ct.arc(x,y,r+4,-Math.PI/2,-Math.PI/2+hp*Math.PI*2);const hc=hp>0.6?'#00ff88':hp>0.3?'#ffa500':'#ff4757';ct.strokeStyle=hc;ct.lineWidth=2.5;ct.stroke();}if(nd.load>5){ct.beginPath();ct.arc(x,y,r-5,-Math.PI/2,-Math.PI/2+(nd.load/100)*Math.PI*2);ct.strokeStyle=nd.load>80?'rgba(255,71,87,0.65)':nd.load>50?'rgba(255,165,0,0.55)':'rgba(0,229,255,0.35)';ct.lineWidth=2;ct.stroke();}const ic={cdn:'CDN',dns:'DNS',lb:'LB',api:'API',cache:'C',db:'DB',queue:'MQ',monitor:'M'};ct.fillStyle=nd.online?co:'#664444';ct.font='bold '+Math.max(8,Math.round(r*0.46))+'px JetBrains Mono,monospace';ct.textAlign='center';ct.textBaseline='middle';ct.fillText(ic[nd.type]||'?',x,y);ct.font=Math.max(7,Math.round(r*0.38))+'px Inter,sans-serif';ct.fillStyle=nd.online?'rgba(255,255,255,0.55)':'rgba(255,80,80,0.55)';nd.label.split('\n').forEach((l,i)=>ct.fillText(l,x,y+r+9+i*11));if(!nd.online){ct.save();ct.strokeStyle='rgba(255,71,87,0.85)';ct.lineWidth=2.2;ct.beginPath();ct.moveTo(x-r*.5,y-r*.5);ct.lineTo(x+r*.5,y+r*.5);ct.stroke();ct.beginPath();ct.moveTo(x+r*.5,y-r*.5);ct.lineTo(x-r*.5,y+r*.5);ct.stroke();ct.restore();}if(nd.online&&hp<0.45){const pu=(Math.sin(t*5)+1)/2;ct.beginPath();ct.arc(x,y,r+7+pu*5,0,Math.PI*2);ct.strokeStyle='rgba(255,71,87,'+(0.18+pu*0.28)+')';ct.lineWidth=1.5;ct.stroke();ct.fillStyle='#ff4757';ct.font='bold 9px JetBrains Mono';ct.fillText(Math.round(nd.hp),x,y-r-8);}const bf=Object.keys(game.activeFailures).find(f=>(_0xg5f[f]?.types||[]).includes(nd.type));if(bf&&nd.online){ct.font='11px serif';ct.textBaseline='alphabetic';ct.fillStyle='#fff';ct.fillText(_0xg5f[bf].icon,x+r*0.62,y-r*0.55);}});}
 
-if(n.load>0) n.load=Math.max(0,n.load-0.5);
-});
+function _0xg5B(ct){game.particles=game.particles.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=0.91;p.vy*=0.91;p.vy+=0.06;p.life--;if(p.life<=0)return false;const a=p.life/p.maxLife;ct.save();ct.globalAlpha=a;ct.beginPath();ct.arc(p.x,p.y,p.sz*a,0,Math.PI*2);ct.fillStyle=p.color;ct.shadowColor=p.color;ct.shadowBlur=5;ct.fill();ct.restore();return true;});}
 
-ctx.fillStyle='rgba(255,255,255,0.05)'; ctx.fillRect(20,H-30,W-40,8); ctx.beginPath();
-const lw=(game.currentLoad/100)*(W-40);
-const lg=ctx.createLinearGradient(20,0,20+lw,0);
-lg.addColorStop(0,'#00ff88'); lg.addColorStop(0.6,'#ffa500'); lg.addColorStop(1,'#ff4757');
-ctx.fillStyle=lg; ctx.fillRect(20,H-30,lw,8);
-ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='11px JetBrains Mono,monospace'; ctx.textAlign='left';
-ctx.fillText(`Traffic Load: ${game.currentLoad.toFixed(0)}%`,20,H-36);
-}
+function _0xg5C(ct,W,H,t){ct.fillStyle='rgba(255,71,87,'+(0.04+0.02*Math.sin(t*3))+')';ct.fillRect(0,0,W*0.28,H);ct.fillStyle='rgba(255,71,87,0.85)';ct.font='bold 10px JetBrains Mono';ct.textAlign='left';ct.textBaseline='alphabetic';ct.fillText('DDoS ATTACK IN PROGRESS',10,22);}
 
-function gameLog(msg,type=''){
-const el=document.getElementById('game-log');
-if(!el) return;
-const d=document.createElement('div');
-d.style.color=type==='ok'?'#00ff88':type==='err'?'#ff4757':type==='warn'?'#ffa500':'#9ca3af';
-d.textContent=`[${new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'})}] ${msg}`;
-el.appendChild(d); el.scrollTop=el.scrollHeight;
-if(el.children.length>50) el.removeChild(el.firstChild);
-}
+function _0xg5D(ct,W,H,t){ct.save();const px=W*0.48+Math.sin(t*2)*4;ct.strokeStyle='rgba(255,71,87,'+(0.45+Math.sin(t*5)*0.18)+')';ct.lineWidth=2;ct.setLineDash([7,4]);ct.beginPath();ct.moveTo(px,0);ct.lineTo(px,H);ct.stroke();ct.setLineDash([]);ct.fillStyle='rgba(255,71,87,0.75)';ct.font='bold 9px JetBrains Mono';ct.textAlign='center';ct.textBaseline='alphabetic';ct.fillText('NETWORK PARTITION',px,H-8);ct.restore();}
+
+function _0xg5E(ct,W,H,t){game.nodes.filter(n=>n.type==='api'&&n.built&&n.online).forEach(n=>{const sh=ct.createRadialGradient(n.x,n.y,n.r,n.x,n.y,n.r*3);sh.addColorStop(0,'rgba(255,165,0,'+(0.12+0.08*Math.sin(t*8+n.id))+')');sh.addColorStop(1,'transparent');ct.beginPath();ct.arc(n.x,n.y,n.r*3,0,Math.PI*2);ct.fillStyle=sh;ct.fill();});}
+
+function _0xg5F(ct,W,H,t){const lv=_0xg5l[game.level-1];if(!lv)return;const pc=Math.min(1,game.levelTimer/lv.dur);const bw=W*0.38,bx=(W-bw)/2,by=H-16;ct.fillStyle='rgba(0,0,0,0.45)';ct.beginPath();if(ct.roundRect)ct.roundRect(bx-1,by-1,bw+2,10,4);else ct.rect(bx-1,by-1,bw+2,10);ct.fill();const bc=pc>0.75?'#00ff88':pc>0.45?'#00e5ff':'#ffa500';ct.fillStyle=bc;ct.beginPath();if(ct.roundRect)ct.roundRect(bx,by,bw*pc,8,3);else ct.rect(bx,by,bw*pc,8);ct.fill();const rm=Math.max(0,lv.dur-game.levelTimer);ct.fillStyle='rgba(255,255,255,0.45)';ct.font='9px Inter';ct.textAlign='center';ct.textBaseline='alphabetic';ct.fillText('Level '+game.level+': '+lv.name+'  '+rm+'s remaining',W/2,by-4);const hc=game.availability>95?'#00ff88':game.availability>80?'#ffa500':'#ff4757';ct.fillStyle=hc;ct.font='bold 10px JetBrains Mono';ct.textAlign='left';ct.fillText('SYS '+game.availability+'%',10,H-22);ct.fillStyle='rgba(0,229,255,0.7)';ct.font='10px JetBrains Mono';ct.fillText(game.rps+' rps',10,H-9);let mi=0;if(game.mitigations.has('circuit_breaker')){ct.fillStyle='#00ff88';ct.font='9px Inter';ct.textAlign='right';ct.fillText('CB ON',W-10,16+mi*13);mi++;}if(game.mitigations.has('rate_limiter')){ct.fillStyle='#ec4899';ct.fillText('RL ON',W-10,16+mi*13);mi++;}if(game.mitigations.has('queue')){ct.fillStyle='#ffa500';ct.fillText('MQ ON',W-10,16+mi*13);mi++;}}
+
+function _0xg5G(ct,tp,W,H){if(!tp||!tp.lines)return;const ls=tp.lines;ct.save();ct.font='11px Inter,sans-serif';const mw=Math.max(...ls.map(l=>ct.measureText(l).width))+24;const bh=ls.length*16+16;const bx=W-mw-14,by=58;const al=Math.min(1,tp.timer/30);ct.globalAlpha=al;ct.fillStyle='rgba(6,9,19,0.96)';if(ct.roundRect)ct.roundRect(bx,by,mw,bh,8);else ct.rect(bx,by,mw,bh);ct.fill();ct.strokeStyle=tp.color||'rgba(0,229,255,0.5)';ct.lineWidth=1;ct.stroke();ct.fillStyle=tp.color||'#00e5ff';ct.textAlign='left';ct.textBaseline='top';ls.forEach((l,i)=>{if(i>0)ct.fillStyle='rgba(255,255,255,0.65)';ct.fillText(l,bx+10,by+8+i*16);});ct.restore();}
+
+function _0xg5H(ct,W,H,t){const a=0.08+0.04*Math.sin(t*3);ct.fillStyle='rgba(0,255,136,'+a+')';ct.fillRect(0,0,W,H);ct.save();ct.shadowColor='#00ff88';ct.shadowBlur=24;ct.fillStyle='rgba(0,255,136,'+(0.85+0.15*Math.sin(t*4))+')';ct.font='bold '+Math.round(28+Math.sin(t*3)*2)+'px var(--font-display)';ct.textAlign='center';ct.textBaseline='middle';ct.fillText('LEVEL COMPLETE!',W/2,H/2);ct.shadowBlur=0;ct.font='13px Inter';ct.fillStyle='rgba(255,255,255,0.7)';ct.fillText('Score: '+game.score.toLocaleString()+'  Availability: '+game.availability+'%',W/2,H/2+34);ct.restore();}
+
+function _0xg5I(){const en=game.nodes.filter(n=>(n.type==='cdn'||n.type==='dns')&&n.built&&n.online);if(!en.length)return;const et=en[Math.floor(Math.random()*en.length)];const pa=_0xg5r(et.id);if(pa.length<2)return;const tp=['read','read','read','write','auth'];const pt=tp[Math.floor(Math.random()*tp.length)];const cl={read:'#00e5ff',write:'#ffa500',auth:'#a855f7'};const bs=game.activeFailures.high_latency?0.006:0.022+Math.random()*0.014;game.packets.push({pathIds:pa,pathIdx:0,x:et.x,y:et.y,progress:0,speed:bs,color:cl[pt],sz:2.8});}
+
+function endGame(wn){game.running=false;game.gameOver=true;clearInterval(game.loadInterval);clearInterval(game.eventInterval);const lv=_0xg5l[Math.min(game.level-1,game.maxLevel-1)];const st=game.availability>99.5?'***':game.availability>95?'**':'*';const bb=Math.round(game.budget/8);const fs=game.score+bb;const ov=document.getElementById('game-overlay');ov.style.display='flex';ov.innerHTML='<div style="text-align:center;max-width:540px;padding:24px"><div style="font-size:40px;margin-bottom:6px">'+(wn?'&#127942;':'&#128165;')+'</div><h2 style="color:'+(wn?'#00ff88':'#ff4757')+';font-family:var(--font-display);font-size:24px;margin-bottom:8px">'+(wn?'System Survived!':'System Collapsed')+'</h2><p style="color:var(--text2);margin-bottom:18px;font-size:13px;line-height:1.6">'+(wn?'You survived all '+game.maxLevel+' levels maintaining <strong style="color:#00ff88">'+game.availability+'%</strong> availability.':'Availability dropped to '+game.availability+'% at Level '+game.level+'. '+lv.company)+'</p><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px"><div style="background:var(--bg3);border-radius:10px;padding:10px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:var(--cyan)">'+fs.toLocaleString()+'</div><div style="font-size:10px;color:var(--text3)">Final Score</div></div><div style="background:var(--bg3);border-radius:10px;padding:10px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:var(--green)">'+game.availability+'%</div><div style="font-size:10px;color:var(--text3)">Availability</div></div><div style="background:var(--bg3);border-radius:10px;padding:10px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:var(--purple)">Lv.'+game.level+'</div><div style="font-size:10px;color:var(--text3)">Reached</div></div><div style="background:var(--bg3);border-radius:10px;padding:10px;border:1px solid var(--border)"><div style="font-size:20px;font-weight:700;color:var(--amber)">'+st+'</div><div style="font-size:10px;color:var(--text3)">Rating</div></div></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary" onclick="gameStart()">&#9654; Play Again</button><button class="btn btn-outline" onclick="showSection(\'distributed\')" style="font-size:13px">&#128218; Distributed Systems</button><button class="btn btn-outline" onclick="showSection(\'chaos\')" style="font-size:13px">&#128293; Chaos Lab</button></div></div>';}
+
+function updateGameHUD(){const xs=(i,v,co)=>{const e=document.getElementById(i);if(e){e.textContent=v;if(co)e.style.color=co;}};xs('g-level',game.level+'/'+game.maxLevel);xs('g-score',game.score.toLocaleString());xs('g-avail',game.availability+'%',game.availability>95?'var(--green)':game.availability>80?'var(--amber)':'var(--red)');xs('g-latency',game.latency+'ms',game.latency<100?'var(--green)':game.latency<300?'var(--amber)':'var(--red)');xs('g-rps',game.rps>=1000?Math.round(game.rps/1000)+'K':String(game.rps));xs('g-budget','$'+game.budget,game.budget>300?'var(--purple)':game.budget>80?'var(--amber)':'var(--red)');}
+
+function gameLog(mg,tp=''){const lg=document.getElementById('game-log');if(!lg)return;const dv=document.createElement('div');const cl={ok:'#00ff88',err:'#ff4757',warn:'#ffa500'};dv.style.cssText='color:'+(cl[tp]||'#9ca3af')+';font-size:11px;line-height:1.55';const ts=new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});dv.textContent='['+ts+'] '+mg;lg.appendChild(dv);lg.scrollTop=lg.scrollHeight;while(lg.children.length>80)lg.removeChild(lg.firstChild);}
+
+function _0xg5J(nd){const e=document.getElementById('inspector-content');if(!e)return;if(!nd){e.innerHTML='<span style="color:var(--text3)">Click any node to inspect its real-time metrics.</span>';return;}const aw={cdn:'CloudFront',dns:'Route 53',lb:'ALB/NLB',api:'EC2 t3.medium',cache:'ElastiCache Redis',db:'RDS PostgreSQL',queue:'MSK (Kafka)',monitor:'CloudWatch'};const hp=Math.round(nd.hp/nd.maxHp*100);const hc=hp>60?'#00ff88':hp>30?'#ffa500':'#ff4757';const lc=nd.load>80?'#ff4757':nd.load>50?'#ffa500':'#00ff88';e.innerHTML='<div style="font-weight:700;color:'+_0xg5c(nd)+';margin-bottom:8px;font-size:13px">'+nd.label.replace('\n',' ')+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;margin-bottom:8px"><span style="color:var(--text3)">HP</span><span style="color:'+hc+'">'+hp+'%</span><span style="color:var(--text3)">Load</span><span style="color:'+lc+'">'+Math.round(nd.load)+'%</span><span style="color:var(--text3)">Status</span><span style="color:'+(nd.online?'#00ff88':'#ff4757')+'">'+(nd.online?'Online':'OFFLINE')+'</span><span style="color:var(--text3)">Layer</span><span style="color:var(--cyan)">'+nd.layer+'</span></div><div style="padding:6px 8px;background:var(--bg3);border-radius:6px;font-size:10px;color:var(--text3)">AWS: <span style="color:var(--amber)">'+(aw[nd.type]||nd.type)+'</span></div>';}
+
+function _0xg5K(){const e=document.getElementById('level-challenge');if(!e)return;const lv=_0xg5l[game.level-1];if(!lv)return;e.innerHTML='<div style="font-weight:700;color:var(--cyan);font-size:12px;margin-bottom:4px">Level '+lv.num+': '+lv.name+'</div><div style="color:var(--text2);font-size:11px;line-height:1.6;margin-bottom:6px">'+lv.challenge+'</div><div style="font-size:10px;color:var(--text3);font-style:italic">&#128218; '+lv.company+'</div>';}
+
+function _0xg5L(){const e=document.getElementById('active-failures-panel');if(!e)return;const ac=Object.keys(game.activeFailures).filter(k=>game.activeFailures[k]>0);if(!ac.length){e.innerHTML='<span style="color:var(--text3);font-size:11px">No active incidents. System stable.</span>';return;}e.innerHTML=ac.map(k=>{const f=_0xg5f[k];return f?'<div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><span>'+f.icon+'</span><span style="font-size:11px;color:#ff4757">'+f.name+'</span><span style="font-size:9px;color:var(--text3)">'+f.diff+'</span></div>':'';}).join('');}
+
+function _0xg5M(){if(game.availability>=99.9&&game.time>60)_0xg5N('five_nines','Five Nines','99.9%+ availability for 60+ seconds');if(game.activeFailures.network_partition&&game.availability>80)_0xg5N('partition_tolerant','Partition Tolerant','Survived a network partition with >80% avail');if(game.level>=5&&game.budget>400)_0xg5N('budget_arch','Budget Architect','Completed level 5 with budget to spare');if(game.achievements.size>=4)_0xg5N('chaos_eng','Chaos Engineer','Encountered 4+ failure types and survived');}
+
+function _0xg5N(id,lb,ds){if(game.achievements.has(id))return;game.achievements.add(id);gameLog('Achievement: '+lb,'ok');const pn=document.getElementById('achievements-panel');if(!pn)return;const bg=document.createElement('div');bg.title=ds;bg.style.cssText='background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--cyan);cursor:default';bg.textContent=lb;pn.appendChild(bg);}
 
 let wb={
 canvas:null,ctx:null,tool:'pen',color:'#00e5ff',size:2,
