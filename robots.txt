@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://systemdesignlab.netlify.app/sitemap.xml
