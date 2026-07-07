@@ -31,9 +31,9 @@ SDL_d7fbf6c8c4a27978bd7c883edbf040fb543f021a12d7573e742d072a296b4aa5
 
 Subject to the terms of this Agreement, the Author grants you a **limited, non-exclusive, non-transferable, non-sublicensable, revocable license** solely to:
 
-- Access and use the live hosted version of the Software at [https://sumit6258.github.io/System-Design/](https://sumit6258.github.io/System-Design/) or [https://systemdesignlab.netlify.app/](https://systemdesignlab.netlify.app/) for your own **personal, non-commercial, educational purposes only**
+- Access and use the live hosted version of the Software at [https://sumit6258.github.io/System-Design/](https://sumit6258.github.io/System-Design/) or [https://systemdesignlab.netlify.app/](https://systemdesignlab.netlify.app/) or [https://www.sumitsuman.com/systemdesignlab/](https://www.sumitsuman.com/systemdesignlab/) for your own **personal, non-commercial, educational purposes only**
 - Share the URL of the live hosted version with other individuals for personal learning purposes
-- Reference the existence of this Software in portfolios, resumes, blog posts, or academic discussions, provided that clear and prominent attribution to **Sumit Suman** and a link to the original URL is included
+- Reference the existence of this Software in portfolios, resumes, blog posts, or academic discussions, provided that clear and prominent attribution to **[Sumit Suman](https://www.sumitsuman.com/)** and a link to the original URL is included
 
 This license does not grant you any other rights. All rights not expressly granted herein are reserved exclusively by the Author.
 

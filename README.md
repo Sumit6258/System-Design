@@ -14,7 +14,7 @@
 
 <br/>
 
-**Created by [Sumit Suman](https://www.linkedin.com/in/thesumitsuman/)**
+**Created by [Sumit Suman](https://www.sumitsuman.com/)**
 
 *From OOP basics to distributed systems - all in one interactive file.*
 
@@ -530,7 +530,7 @@ Copyright © 2026 Sumit Suman. All Rights Reserved.
 - Remove copyright notices, watermarks, or authorship signatures
 
 ### Attribution
-> [https://sumit6258.github.io/System-Design/](https://sumit6258.github.io/System-Design/)
+> **[System Design Lab](https://www.sumitsuman.com/systemdesignlab/)**
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Sumit%20Suman-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/thesumitsuman/)
 
